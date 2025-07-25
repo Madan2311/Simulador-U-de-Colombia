@@ -7,12 +7,6 @@
     --black: #000;
 }
 
-* {
-    margin: 0;
-    padding: 0;
-    font-family: "Archivo", Sans-serif;
-}
-
 .material-symbols-outlined {
     font-variation-settings:
         'FILL' 0,
@@ -21,7 +15,7 @@
         'opsz' 24
 }
 
-#app {
+.content-all-simulator {
     width: 100%;
     background-color: transparent;
     box-sizing: border-box;
@@ -31,6 +25,8 @@
     align-items: center;
     justify-content: center;
     padding: 5% 0;
+    font-family: "Archivo", Sans-serif !important;
+    font-size: initial;
 }
 
 #view-container {
@@ -68,6 +64,7 @@
     text-align: center;
     color: var(--black);
     font: 97% / 1.5 Arial, Helvetica, sans-serif;
+    box-sizing: border-box;
 }
 
 .requirements {
@@ -84,7 +81,7 @@
     line-height: 32px;
     text-align: center;
     font-size: 32px;
-    margin-bottom: 34px;
+    margin: 0 0 34px 0;
     color: var(--white);
 }
 
@@ -114,7 +111,7 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    margin-bottom: 4px;
+    margin: 0 0 4px 0;
     font-size: 16px;
     font-weight: 400;
     text-align: center;
@@ -123,6 +120,7 @@
 .requirements-icons h5 {
     font-weight: 600;
     font-size: 1.2em;
+    margin: 0;
 }
 
 .content-btns {
@@ -169,6 +167,7 @@
 
 .form>div {
     margin: 10px 0;
+    font-size: initial;
 }
 
 .content-inputs {
@@ -239,7 +238,7 @@ select option:hover {
 
 .percentage p {
     width: auto;
-    margin-left: 10px;
+    margin: 0 0 0 10px;
     font-weight: bold;
 }
 
@@ -277,7 +276,7 @@ select option:hover {
 
 .plan {
     margin-bottom: 34px;
-    overflow: hidden;
+    overflow: auto;
     width: 0;
     height: 0;
     transition: all 0.5s ease;
@@ -295,8 +294,9 @@ select option:hover {
     line-height: 32px;
     text-align: center;
     font-size: 32px;
-    margin-bottom: 34px;
+    margin: 10px 0;
     color: var(--major);
+    font-weight: 700;
 }
 
 table {
@@ -378,6 +378,18 @@ tfoot td {
         max-width: 95%;
     }
 
+    .title h1 {
+        font-size: 2em;
+    }
+
+    .title span{
+        font: 85% / 1.5 Arial, Helvetica, sans-serif;
+    }
+
+    .requirements h3 {
+        font-size: 1.8em;
+    }
+
     .requirements-icons{
         padding: 0;
         flex-wrap: wrap;
@@ -390,4 +402,59 @@ tfoot td {
         flex-basis: initial;
         box-sizing: border-box;
     }
+
+    .continue {
+        font-size: 0.9em;
+        padding: 6px;
+    }
+}
+
+@media screen and (max-width: 767px){
+    /*426*/
+    .requirements-icons>div{
+        width: 100%;
+    }
+
+    .form>div{
+        flex-wrap: wrap;
+    }
+
+    .content-inputs>div {
+        width: 100%;
+        margin: 5px 0;
+    }
+
+    .typeOfScholarship>div {
+        width: 100%;
+    }
+
+    .content-btns{
+        flex-wrap: wrap;
+    }
+}
+
+@media screen and (max-width: 425px){
+    .title h1 {
+        font-size: 1.7em;
+        line-height: 1em;
+        padding: 0;
+    }
+
+    .title span{
+        padding: 0;
+    }
+
+    .requirements{
+        padding: 20px;
+    }
+
+    .requirements h3{
+        font-size: 1.4em;
+        margin: 0 0 20px 0;
+    }
+
+    .plan h3{
+        font-size: 25px;
+    }
+
 }

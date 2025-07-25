@@ -67,24 +67,24 @@
             <div class="content-inputs">
                 <div>
                     <label for="name" required >Nombre completo</label>
-                    <input type="text" id="name" />
+                    <input type="text" id="name" autocomplete="off" />
                 </div>
                 
                 <div>
                     <label for="id" required >Número de indentificación</label>
-                    <input type="number" id="id" />
+                    <input type="number" id="id" autocomplete="off" />
                 </div>
             </div>
             
             <div class="content-inputs">
                 <div>
                     <label for="celPhone" required >Célular</label>
-                    <input type="text" id="celPhone" />
+                    <input type="text" id="celPhone" autocomplete="off" />
                 </div>
 
                 <div>
                     <label for="email" required >Correo</label>
-                    <input type="email" id="email" />
+                    <input type="email" id="email" autocomplete="off" />
                 </div>
             </div>
             

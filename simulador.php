@@ -58,8 +58,10 @@ add_action('wp_enqueue_scripts', 'simulador_enqueue_scripts');
  */
 function simulador_shortcode() {
     ob_start(); ?>
-    <div id="loading" style="display:none;">Cargando...</div>
-    <div id="view-container"></div>
+    <div class="content-all-simulator">
+        <div id="loading" style="display:none;">Cargando...</div>
+        <div id="view-container"></div>
+    </div>
     <?php return ob_get_clean();
 }
 add_shortcode('simulador', 'simulador_shortcode');

@@ -112,13 +112,13 @@
                 <div class="percentage">
                     <label for="percentage">Porcentaje</label>
                     <div>
-                        <input type="number" id="percentage" required />
+                        <input type="number" id="percentage" autocomplete="off" required />
                         <p>%</p>
                     </div>
                 </div>
             </div>
             
-            <div>
+            <div style="margin: 0 5px;">
                 <label for="term">Plazo</label>
                 <select name="select" id="term" required>
                     <option value="">Selecciona una opción</option>
@@ -129,6 +129,34 @@
     </div>
 
     <div class="plan" id="content-plan">
+        <h3>Detalle del programa</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th scope="col">Valor matrícula</th>
+                    <th scope="col">Valor neto matrícula</th>
+                    <th scope="col">Tasa de interés</th>
+                    <th scope="col">Fecha</th>
+                    <th scope="col">Monto del crédito</th>
+                    <th scope="col">Cuota inicial</th>
+                    <th scope="col">Administración</th>
+                    <th scope="col">Cuota mensual</th>
+                </tr>
+            </thead>
+            <tbody id="program-detail">
+                <tr>
+                    <td>3.661.700</td>
+                    <td>2.563.190</td>
+                    <td>1%</td>
+                    <td>22/07/2025</td>
+                    <td>1.794.233</td>
+                    <td>768.957</td>
+                    <td>89.712</td>
+                    <td>369.683</td>
+                </tr>
+            </tbody>
+        </table>
+
         <h3>Plan de pagos</h3>
         <table>
             <thead>
