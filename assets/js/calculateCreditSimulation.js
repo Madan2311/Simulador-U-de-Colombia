@@ -27,13 +27,13 @@ function calculateCreditSimulation(valorMatricula, descuentoBeca, tasaInteres, p
 
     // Resumen
     const resumen = {
-        valorMatricula,
+        valorMatricula: (valorMatricula).toLocaleString('es-CO'),
         descuentoBeca,
-        matriculaNeta: Math.round(matriculaNeta),
-        cuotaInicial: Math.round(cuotaInicial),
-        montoCredito: Math.round(montoCredito),
-        administracion: Math.round(administracion),
-        cuotaMensual: Math.round(cuotaMensual),
+        matriculaNeta: Math.round(matriculaNeta).toLocaleString('es-CO'),
+        cuotaInicial: Math.round(cuotaInicial).toLocaleString('es-CO'),
+        montoCredito: Math.round(montoCredito).toLocaleString('es-CO'),
+        administracion: Math.round(administracion).toLocaleString('es-CO'),
+        cuotaMensual: Math.round(cuotaMensual).toLocaleString('es-CO'),
         fechaInicio: fechaInicioStr,
         plazo: plazoMeses
     };

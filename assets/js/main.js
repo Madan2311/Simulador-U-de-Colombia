@@ -1,7 +1,11 @@
+// Objeto global que mantendrá los datos del formulario
+window.formDataState = {};
+
 (function ($) {
   $(document).ready(function () {
     // Cargar la vista inicial
     loadView('details');
+    //loadView('messages');
     sessionStorage.clear(); // limpia el storage al cargar el sitio
 
     // ------------------- //
@@ -22,10 +26,23 @@
             initFileInputs();               // Estilo de los tipo file
             syncModalityWithJornada();      // validación de la jornada
             restoreFormData();              // Restaurar los datos de los campos
+            initializeFormDataState();      // Inicializa el objeto global con los datos del formulario
 
             if (viewPath.includes('form-program')) {
               populateTermOptions();        // valida el campo plazo
               toggleScholarshipFields();    // valida el campo beca
+            }
+
+            if (viewPath === 'messages') {
+              const status = sessionStorage.getItem('formSuccess');
+              if (status === '1') {
+                $('#success-message').show();
+                $('#error-message').hide();
+              } else {
+                $('#error-message').show();
+                $('#success-message').hide();
+              }
+              sessionStorage.removeItem('formSuccess'); // limpiar después
             }
 
             if (callback) callback();
@@ -45,7 +62,7 @@
       $(document).on('click', '#continue', () => switchView('form-program'));
       $(document).on('click', '#continue-program', () => switchView('form-student'));
       $(document).on('click', '#previous-program', () => switchView('details'));
-      $(document).on('click', '#previous-student', () => switchView('form-program'))
+      $(document).on('click', '#previous-student', () => switchView('form-program'));
     }
 
     // Cambio de vista con efecto de carga
@@ -72,9 +89,7 @@
         const value = $field.val();
 
         if (!value || (value.trim && value.trim() === '')) isValid = false;
-
         if ($field.attr('type') === 'file' && $field[0].files.length === 0) isValid = false;
-        if ($field.attr('type') === 'email' && value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) isValid = false;
       });
 
       $('#payment-plan').prop('disabled', !isValid);
@@ -146,23 +161,33 @@
 
       const date = new Date();
       const mapData = mapExcelData(simulador_ajax.excelData, program, day, modality, typeOfStudent);
-
-      const dateDiscountOne = mapData[0][7] || '';
-      const dateDiscountTwo = mapData[0][10] || '';
       let valueProgramDiscount = 0;
 
-      dateDiscountOne.split('/').reverse().join('-'); // formatear fecha a YYYY-MM-DD
-      dateDiscountTwo.split('/').reverse().join('-'); // formatear fecha a YYYY-MM-DD
+      if (mapData.length !== 0) {
+        const dateDiscountOne = mapData[0][7] || '';
+        const dateDiscountTwo = mapData[0][10] || '';
 
-      if (date <= new Date(dateDiscountOne)) {
-        const discountReplace = mapData[0][8].replace(/[ ,$]/g, "");
-        valueProgramDiscount = parseFloat(discountReplace) || 0;
-      } else if (date <= new Date(dateDiscountTwo)) {
-        const discountReplace = mapData[0][11].replace(/[ ,$]/g, "");
-        valueProgramDiscount = parseFloat(discountReplace) || 0;
-      } else {
-        const discountReplace = mapData[0][13].replace(/[ ,$]/g, "");
-        valueProgramDiscount = parseFloat(discountReplace) || 0;
+        dateDiscountOne.split('/').reverse().join('-'); // formatear fecha a YYYY-MM-DD
+        dateDiscountTwo.split('/').reverse().join('-'); // formatear fecha a YYYY-MM-DD
+
+        if (date <= new Date(dateDiscountOne)) {
+          const discountReplace = mapData[0][8].replace(/[ ,$]/g, "");
+          valueProgramDiscount = parseFloat(discountReplace) || 0;
+        } else if (date <= new Date(dateDiscountTwo)) {
+          const discountReplace = mapData[0][11].replace(/[ ,$]/g, "");
+          valueProgramDiscount = parseFloat(discountReplace) || 0;
+        } else {
+          const discountReplace = mapData[0][13].replace(/[ ,$]/g, "");
+          valueProgramDiscount = parseFloat(discountReplace) || 0;
+        }
+      }
+
+      if (!valueProgramDiscount || valueProgramDiscount <= 0) {
+        $('#content-plan').removeClass('show'); // ocultar plan si no hay valor
+        $('#payment-plan').removeClass('loaded');
+        $('#continue-program').prop('disabled', true);
+        $('#message-program-nofound').addClass('show'); // mostrar mensaje si no hay valor
+        return;
       }
 
       // valorMatricula=valueProgramDiscount
@@ -201,7 +226,7 @@
 
       const $tbodySummary = $('#program-detail');
       $tbodySummary.empty();
-      
+
       $tbodySummary.append(`
         <tr>
             <td>${resultado.resumen.valorMatricula || 0}</td>
@@ -214,13 +239,18 @@
             <td>${resultado.resumen.cuotaMensual || 0}</td>
         </tr>
       `);
-              
+
       // Mostrar contenedor si hay filas
       const rows = $('#table-plan tr').length;
       if (rows > 0) {
+        $('#message-program-nofound').removeClass('show'); // ocultar mensaje si hay filas
         $('#content-plan').addClass('show'); // mostrar plan si tiene clase show
         $('#payment-plan').addClass('loaded');
         $('#continue-program').prop('disabled', false);
+
+        // Guardar tablas en formDataState
+        formDataState['program_detail_html'] = $('#program-detail').html();
+        formDataState['payment_plan_html'] = $('#table-plan').html();
       }
     });
 
@@ -230,18 +260,147 @@
       const $field = $(this);
       const id = $field.attr('id');
       const type = $field.attr('type');
-      const value = $field.val();
+      const value = type === 'checkbox' ? $field.is(':checked') : $field.val();
 
       // Ignora campos sin ID o tipo file
       if (!id || type === 'file') return;
+
+      // Actualiza el objeto global
+      formDataState[id] = value;
 
       // Guarda el valor en sessionStorage
       sessionStorage.setItem(id, value);
     });
 
+    // ------------------- //
+    // Envío del formulario
+    $(document).on('click', '#send', function (e) {
+      e.preventDefault();
+
+      // se ponen el disable para evitar múltiples envíos
+      $(this).prop('disabled', true);
+      $('#previous-studen').prop('disabled', true);
+
+      const formData = new FormData();
+
+      // Datos básicos
+      formData.append('action', 'simulador_send_form');
+      formData.append('simulador_nonce', $('#simulador_nonce').val());
+
+      // Desde formDataState
+      formData.append('name', formDataState['name'] || '');
+      formData.append('id', formDataState['id'] || '');
+      formData.append('celPhone', formDataState['celPhone'] || '');
+      formData.append('email', formDataState['email'] || '');
+      formData.append('programs', formDataState['programs'] || '');
+      formData.append('days', formDataState['days'] || '');
+      formData.append('mode', formDataState['mode'] || '');
+      formData.append('typeOfStudent', formDataState['typeOfStudent'] || '');
+      formData.append('term', formDataState['term'] || '');
+      formData.append('typeOfScholarship', formDataState['typeOfScholarship'] ? '1' : '0');
+      formData.append('percentage', formDataState['percentage'] || '');
+
+      // Contenido HTML de las tablas
+      formData.append('program_detail_html', formDataState['program_detail_html'] || '');
+      formData.append('payment_plan_html', formDataState['payment_plan_html'] || '');
+
+      // Validación de archivos requeridos
+      const camposObligatorios = ['employmentLetter', 'paymentStubs', 'document'];
+      let archivosValidos = true;
+
+      camposObligatorios.forEach(id => {
+        const fileInput = document.getElementById(id);
+        if (!fileInput || fileInput.files.length === 0) {
+          archivosValidos = false;
+        }
+      });
+
+      // Solo si tiene beca, se debe validar también el comprobante
+      if (formDataState['typeOfScholarship']) {
+        const becaInput = document.getElementById('proofOfScholarship');
+        if (!becaInput || becaInput.files.length === 0) {
+          archivosValidos = false;
+        }
+      }
+
+      if (!archivosValidos) {
+        console.log('❌ Faltan archivos requeridos. Por favor, adjunta todos los archivos necesarios.');
+        return;
+      }
+
+      // Adjuntar archivos
+      $('#view-container input[type="file"]').each(function () {
+        if (this.files.length > 0) {
+          formData.append(this.name, this.files[0]);
+        }
+      });
+
+      fetch(simulador_ajax.ajaxurl, {
+        method: 'POST',
+        body: formData
+      })
+        .then(res => res.json())
+        .then(res => {
+          if (res.success) {
+            sessionStorage.clear(); // Limpia otros datos
+            sessionStorage.setItem('formSuccess', '1');
+            switchView('messages');
+          } else {
+            sessionStorage.clear(); // Limpia otros datos
+            sessionStorage.setItem('formSuccess', '0');
+            switchView('messages');
+          }
+        })
+        .catch(err => {
+          console.error('❌ Error en envío:', err);
+          console.log('❌ Error de red al enviar.');
+        });
+    });
+
     // Detectar cambios para validar formularios dinámicamente
     $(document).on('input change', '#view-container [required], #view-container select', validateForm);
     $(document).on('ajaxComplete', validateForm);
+
+    // modificación de los input tipo file que estan dentro del div con la clase file-component
+    function initFileInputs() {
+      $('.file-component').each(function () {
+        const $component = $(this);
+        const $input = $component.find('input[type="file"]');
+        const $label = $component.find('label');
+        const $labelIcon = $label.find('span.material-symbols-outlined'); // ícono 'upload'
+        const $labelText = $label.find('span.text'); // texto de etiqueta
+        const $removeIcon = $component.find('span.material-symbols-outlined.close'); // ícono 'close'
+        const labelDefault = $labelText.text();
+
+        // Cambio de archivo
+        $input.on('change', function () {
+          const fileName = $input[0].files[0]?.name || '';
+          if (fileName) {
+            $labelText.text(fileName);
+            $labelIcon.hide();
+            $removeIcon.show();
+          } else {
+            $labelText.text(labelDefault);
+            $labelIcon.show();
+            $removeIcon.hide();
+          }
+        });
+
+        // Eliminar archivo
+        $removeIcon.on('click', function () {
+          $input.val('');
+          $labelText.text(labelDefault);
+          $labelIcon.show();
+          $removeIcon.hide();
+
+          validateForm();
+        });
+
+        // Estado inicial
+        $labelIcon.show();
+        $removeIcon.hide();
+      });
+    }
   });
 
   // validación de campo plazo
@@ -288,52 +447,13 @@
   // validación del campo jornada
   function syncModalityWithJornada() {
     const jornada = $('#days').val();
-    const isDistance = jornada === '4'; // 4 = Jornada 'Distancia'
+    const isDistance = jornada === 'Distancia'; // Distancia = Jornada 'Distancia'
 
     if (isDistance) {
-      $('#mode').val('2').prop('disabled', true); // 2 = Modalidad 'Distancia'
+      $('#mode').val('Distancia').prop('disabled', true); // Distancia = Modalidad 'Distancia'
     } else {
       $('#mode').prop('disabled', false);
     }
-  }
-
-  // modificación de los input tipo file que estan dentro del div con la clase file-component
-  function initFileInputs() {
-    $('.file-component').each(function () {
-      const $component = $(this);
-      const $input = $component.find('input[type="file"]');
-      const $label = $component.find('label');
-      const $labelIcon = $label.find('span.material-symbols-outlined'); // ícono 'upload'
-      const $labelText = $label.find('span.text'); // texto de etiqueta
-      const $removeIcon = $component.find('span.material-symbols-outlined.close'); // ícono 'close'
-      const labelDefault = $labelText.text();
-
-      // Cambio de archivo
-      $input.on('change', function () {
-        const fileName = $input[0].files[0]?.name || '';
-        if (fileName) {
-          $labelText.text(fileName);
-          $labelIcon.hide();
-          $removeIcon.show();
-        } else {
-          $labelText.text(labelDefault);
-          $labelIcon.show();
-          $removeIcon.hide();
-        }
-      });
-
-      // Eliminar archivo
-      $removeIcon.on('click', function () {
-        $input.val('');
-        $labelText.text(labelDefault);
-        $labelIcon.show();
-        $removeIcon.hide();
-      });
-
-      // Estado inicial
-      $labelIcon.show();
-      $removeIcon.hide();
-    });
   }
 
   // para restaurar los datos traidos desde el storage para cuando le den al botón de anterior
@@ -378,4 +498,19 @@
 
     return `${year}-${month}-${day}`;
   }
+
+  function initializeFormDataState() {
+    $('#view-container input, #view-container select, #view-container textarea').each(function () {
+      const $field = $(this);
+      const id = $field.attr('id');
+      const type = $field.attr('type');
+
+      if (!id || type === 'file') return;
+
+      const value = type === 'checkbox' ? $field.is(':checked') : $field.val();
+
+      formDataState[id] = value;
+    });
+  }
+
 })(jQuery);

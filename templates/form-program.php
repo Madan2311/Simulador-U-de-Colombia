@@ -127,7 +127,7 @@
 
     <div class="plan" id="content-plan">
         <h3>Detalle del programa</h3>
-        <table>
+        <table id="program-detail-table">
             <thead>
                 <tr>
                     <th scope="col">Valor matrícula</th>
@@ -145,7 +145,7 @@
         </table>
 
         <h3>Plan de pagos</h3>
-        <table>
+        <table id="payment-plan-table">
             <thead>
                 <tr>
                     <th scope="col">#</th>
@@ -159,6 +159,11 @@
             <tbody id="table-plan">
             </tbody>
         </table>
+    </div>
+
+    <div class="message-program-nofound" id="message-program-nofound">
+        <h3>¡Ups! Algo salió mal.</h3>
+        <p>El programa seleccionado no tiene información disponible. Por favor, elige otro programa.</p>
     </div>
     
     <div class="content-btns">

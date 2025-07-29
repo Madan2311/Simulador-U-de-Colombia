@@ -66,38 +66,38 @@
         <div class="form">
             <div class="content-inputs">
                 <div>
-                    <label for="name" required >Nombre completo</label>
-                    <input type="text" id="name" autocomplete="off" />
+                    <label for="name">Nombre completo</label>
+                    <input type="text" id="name" required autocomplete="off" />
                 </div>
                 
                 <div>
-                    <label for="id" required >Número de indentificación</label>
-                    <input type="number" id="id" autocomplete="off" />
+                    <label for="id">Número de indentificación</label>
+                    <input type="number" id="id" required autocomplete="off" />
                 </div>
             </div>
             
             <div class="content-inputs">
                 <div>
-                    <label for="celPhone" required >Célular</label>
-                    <input type="text" id="celPhone" autocomplete="off" />
+                    <label for="celPhone">Célular</label>
+                    <input type="text" id="celPhone" required autocomplete="off" />
                 </div>
 
                 <div>
-                    <label for="email" required >Correo</label>
-                    <input type="email" id="email" autocomplete="off" />
+                    <label for="email">Correo</label>
+                    <input type="email" id="email" required autocomplete="off" />
                 </div>
             </div>
             
             <h4>Carga de documentos</h4>
             <div class="content-inputs">
                 <div class="file-component">
-                    <input type="file" id="employmentLetter" required />
+                    <input type="file" id="employmentLetter" name="employmentLetter" accept=".pdf" required />
                     <label for="employmentLetter"><span class="material-symbols-outlined">upload</span><span class="text">Carta laboral</span></label>
                     <span class="material-symbols-outlined close">close</span>
                 </div>
 
                 <div class="file-component">
-                    <input type="file" id="paymentStubs" required />
+                    <input type="file" id="paymentStubs" name="paymentStubs" accept=".pdf" required />
                     <label for="paymentStubs"><span class="material-symbols-outlined">upload</span><span class="text">Colillas de pago</span></label>
                     <span class="material-symbols-outlined close">close</span>
                 </div>
@@ -105,13 +105,13 @@
             
             <div class="content-inputs">
                 <div class="file-component">
-                    <input type="file" id="proofOfScholarship" required />
+                    <input type="file" id="proofOfScholarship" name="proofOfScholarship" accept=".pdf" />
                     <label for="proofOfScholarship"><span class="material-symbols-outlined">upload</span><span class="text">Comprobante de beca</span></label>
                     <span class="material-symbols-outlined close">close</span>
                 </div>
 
                 <div class="file-component">
-                    <input type="file" id="document" required />
+                    <input type="file" id="document" name="document" accept=".pdf" required />
                     <label for="document"><span class="material-symbols-outlined">upload</span><span class="text">Documento</span></label>
                     <span class="material-symbols-outlined close">close</span>
                 </div>
@@ -125,3 +125,5 @@
         <button class="continue" id="send" disabled>Enviar</button>
     </div>
 </div>
+
+<input type="hidden" id="simulador_nonce" value="<?php echo wp_create_nonce('simulador_send_form'); ?>">

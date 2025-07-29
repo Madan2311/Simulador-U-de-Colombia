@@ -2,8 +2,9 @@
 /**
  * Plugin Name: Simulador
  * Description: Simulador de crédito, plan de pagos, y navegación tipo SPA.
+ * Mode de uso: [simulador interestrate="2"]
  * Version: 1.0.25
- * Author: Daniel Henao y Karen Velilla
+ * 
  */
 
 if (!defined('ABSPATH')) exit; // Evita el acceso directo al archivo
@@ -79,7 +80,7 @@ function simulador_shortcode($atts) {
     $simulador_interestrate = $atts['interestrate'];
 
     ob_start(); ?>
-    <div class="content-all-simulator">
+    <div class="content-all-simulator simulador-plugin">
         <div id="loading" style="display:none;">Cargando...</div>
         <div id="view-container"></div>
     </div>
@@ -98,7 +99,7 @@ add_action('wp_ajax_simulador_load_view', 'simulador_load_view');
  */
 function simulador_load_view() {
     $view = sanitize_text_field($_POST['vista']);
-    $allowed_views = ['details', 'form-program', 'form-student'];
+    $allowed_views = ['details', 'form-program', 'form-student', 'messages'];
 
     if (in_array($view, $allowed_views)) {
         include plugin_dir_path(__FILE__) . "templates/{$view}.php";
@@ -139,7 +140,7 @@ function simulador_admin_page() {
         <form method="post" enctype="multipart/form-data">
             <?php wp_nonce_field('subir_excel_simulador', 'simulador_excel_nonce'); ?>
             <input type="file" name="simulador_excel" accept=".xlsx" required>
-            <br><br>
+            <br></br>
             <input type="submit" class="button button-primary" value="Subir Excel">
         </form>
     </div>
@@ -220,3 +221,125 @@ add_action('admin_init', function () {
     }
 });
 
+
+
+/**
+ * envio del formulario de simulación al correo electrónico del administrador.
+ * Recibe los datos del formulario, los valida y envía un correo al administrador.
+ */
+
+add_action('wp_ajax_nopriv_simulador_send_form', 'simulador_send_form');
+add_action('wp_ajax_simulador_send_form', 'simulador_send_form');
+
+function simulador_send_form() {
+    if (!isset($_POST['simulador_nonce']) || !wp_verify_nonce($_POST['simulador_nonce'], 'simulador_send_form')) {
+        wp_send_json_error('Nonce inválido', 403);
+    }
+
+    $name = sanitize_text_field($_POST['name'] ?? '');
+    $id = sanitize_text_field($_POST['id'] ?? '');
+    $celPhone = sanitize_text_field($_POST['celPhone'] ?? '');
+    $email = sanitize_email($_POST['email'] ?? '');
+
+    $programs = sanitize_text_field($_POST['programs'] ?? '');
+    $days = sanitize_text_field($_POST['days'] ?? '');
+    $mode = sanitize_text_field($_POST['mode'] ?? '');
+    $typeOfStudent = sanitize_text_field($_POST['typeOfStudent'] ?? '');
+    $term = sanitize_text_field($_POST['term'] ?? '');
+    
+    $program_detail_html = wp_kses_post($_POST['program_detail_html'] ?? '');
+    $payment_plan_html = wp_kses_post($_POST['payment_plan_html'] ?? '');
+
+    if (empty($name) || empty($id) || empty($email) || !is_email($email)) {
+        wp_send_json_error('Datos inválidos');
+    }
+
+    $tablaStyle = 'border-collapse: collapse; width: 100%; font-family: Arial, sans-serif; font-size: 14px; margin-bottom: 30px;';
+    $thStyle = 'background-color: #f4f6f9; border: 1px solid #dfe3e8; padding: 10px; text-align: left; font-weight: bold;';
+    $tdStyle = 'border: 1px solid #dfe3e8; padding: 10px;';
+    $cardStyle = 'border: 1px solid #dfe3e8; border-radius: 8px; background-color: #ffffff; padding: 20px; margin-bottom: 20px;';
+    $titleStyle = 'font-family: Arial, sans-serif; font-size: 18px; margin-bottom: 10px; color: #2c3e50;';
+
+    // Contenido HTML del mensaje
+    // 🔹 Información personal (con "tarjeta")
+    $message = "<div style='$cardStyle'>";
+    $message .= "<div style='$titleStyle'>📄 Información del Estudiante</div>";
+    $message .= "<table style='$tablaStyle'>";
+    $message .= "<tr><td style='$thStyle'>Nombre</td><td style='$tdStyle'>{$name}</td></tr>";
+    $message .= "<tr><td style='$thStyle'>Cédula</td><td style='$tdStyle'>{$id}</td></tr>";
+    $message .= "<tr><td style='$thStyle'>Celular</td><td style='$tdStyle'>{$celPhone}</td></tr>";
+    $message .= "<tr><td style='$thStyle'>Email</td><td style='$tdStyle'>{$email}</td></tr>";
+    $message .= "<tr><td style='$thStyle'>Programa</td><td style='$tdStyle'>{$programs}</td></tr>";
+    $message .= "<tr><td style='$thStyle'>Jornada</td><td style='$tdStyle'>{$days}</td></tr>";
+    $message .= "<tr><td style='$thStyle'>Modalidad</td><td style='$tdStyle'>{$mode}</td></tr>";
+    $message .= "<tr><td style='$thStyle'>Tipo de estudiante</td><td style='$tdStyle'>{$typeOfStudent}</td></tr>";
+    $message .= "<tr><td style='$thStyle'>Plazo</td><td style='$tdStyle'>{$term} meses</td></tr>";
+    $message .= "</table></div>";
+
+    // 🔹 Detalle del Programa
+    $styledProgramDetail = "<div style='$cardStyle'>";
+    $styledProgramDetail .= "<div style='$titleStyle'>📊 Detalle del Programa</div>";
+    $styledProgramDetail .= "<table style='$tablaStyle'>";
+    $styledProgramDetail .= "<thead><tr>";
+    $styledProgramDetail .= "<th style='$thStyle'>Valor matrícula</th>";
+    $styledProgramDetail .= "<th style='$thStyle'>Valor neto matrícula</th>";
+    $styledProgramDetail .= "<th style='$thStyle'>Tasa de interés</th>";
+    $styledProgramDetail .= "<th style='$thStyle'>Fecha</th>";
+    $styledProgramDetail .= "<th style='$thStyle'>Monto del crédito</th>";
+    $styledProgramDetail .= "<th style='$thStyle'>Cuota inicial</th>";
+    $styledProgramDetail .= "<th style='$thStyle'>Administración</th>";
+    $styledProgramDetail .= "<th style='$thStyle'>Cuota mensual</th>";
+    $styledProgramDetail .= "</tr></thead><tbody>";
+    $styledProgramDetail .= str_replace('<td>', "<td style='$tdStyle'>", $program_detail_html);
+    $styledProgramDetail .= "</tbody></table></div>";
+
+    // 🔹 Plan de pagos
+    $styledPaymentPlan = "<div style='$cardStyle'>";
+    $styledPaymentPlan .= "<div style='$titleStyle'>💰 Plan de Pagos</div>";
+    $styledPaymentPlan .= "<table style='$tablaStyle'>";
+    $styledPaymentPlan .= "<thead><tr>";
+    $styledPaymentPlan .= "<th style='$thStyle'>#</th>";
+    $styledPaymentPlan .= "<th style='$thStyle'>Fecha</th>";
+    $styledPaymentPlan .= "<th style='$thStyle'>Capital</th>";
+    $styledPaymentPlan .= "<th style='$thStyle'>Interés</th>";
+    $styledPaymentPlan .= "<th style='$thStyle'>Cuota</th>";
+    $styledPaymentPlan .= "<th style='$thStyle'>Saldo</th>";
+    $styledPaymentPlan .= "</tr></thead><tbody>";
+    $styledPaymentPlan .= str_replace('<td>', "<td style='$tdStyle'>", $payment_plan_html);
+    $styledPaymentPlan .= "</tbody></table></div>";
+
+    // Unir todo
+    $message .= $styledProgramDetail;
+    $message .= $styledPaymentPlan;
+
+    $to = 'henao-042001@hotmail.com, karenvelilla123@gmail.com'; // Correo del administrador
+    //$to = 'karenvelilla123@gmail.com'; // Correo del administrador
+    $subject = '💰 Simulación de Crédito';
+    $headers = [
+        'Content-Type: text/html; charset=UTF-8',
+        "From: 💲 Simulación de Crédito para <{$name}> 💲"
+    ];
+
+    // Adjuntos
+    $attachments = [];
+    foreach ($_FILES as $file) {
+        if ($file['error'] === UPLOAD_ERR_OK) {
+            $tmp_name = $file['tmp_name'];
+            $name = $file['name'];
+            $upload = wp_upload_bits($name, null, file_get_contents($tmp_name));
+            if (!$upload['error']) {
+                $attachments[] = $upload['file'];
+            }
+        }
+    }
+
+    $sent = wp_mail($to, $subject, $message, $headers, $attachments);
+
+    if ($sent) {
+        wp_send_json_success('Solicitud enviada correctamente');
+    } else {
+        wp_send_json_error('Error al enviar el correo');
+    }
+
+    wp_die();
+}
