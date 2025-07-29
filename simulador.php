@@ -3,7 +3,7 @@
  * Plugin Name: Simulador
  * Description: Simulador de crédito, plan de pagos, y navegación tipo SPA.
  * Version: 1.0.25
- * Author: Daniel Heao y Karen Velilla
+ * Author: Daniel Henao y Karen Velilla
  */
 
 if (!defined('ABSPATH')) exit; // Evita el acceso directo al archivo
@@ -12,10 +12,19 @@ require_once plugin_dir_path(__FILE__) . 'vendor/autoload.php'; // Autoload de d
 
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
+$simulador_interestrate = []; // Variable global para la tasa de interés
+/**
+ * Carga los scripts y estilos necesarios para el simulador en el frontend.
+ * Incluye estilos personalizados, jQuery, Inputmask y el script principal del simulador.
+ * También carga el archivo Excel si existe y lo convierte a un arreglo para usar en JS.
+ * Pasa la URL de AJAX y los datos del Excel al script principal.
+ */
 /**
  * Encola los scripts y estilos necesarios para el frontend del simulador.
  */
 function simulador_enqueue_scripts() {
+    global $simulador_interestrate;
+
     // Estilos personalizados del simulador
     wp_enqueue_style('simulador-css', plugin_dir_url(__FILE__) . 'assets/css/styles.css');
     // Fuente de iconos de Google
@@ -24,8 +33,10 @@ function simulador_enqueue_scripts() {
     wp_enqueue_script('jquery');
     // Inputmask para máscaras de entrada en formularios
     wp_enqueue_script('inputmask', 'https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.8/jquery.inputmask.min.js', [], null, true);
+    // script del calculador de tasas de interés
+    wp_enqueue_script('simulador-calculate', plugin_dir_url(__FILE__) . 'assets/js/calculateCreditSimulation.js', ['jquery'], null, true);
     // Script principal del simulador
-    wp_enqueue_script('simulador-js', plugin_dir_url(__FILE__) . 'assets/js/main.js', ['jquery'], null, true);
+    wp_enqueue_script('simulador-js', plugin_dir_url(__FILE__) . 'assets/js/main.js', ['jquery', 'simulador-calculate'], null, true);
 
     // Leer el archivo Excel si existe
     $data_array = [];
@@ -47,7 +58,8 @@ function simulador_enqueue_scripts() {
     // Pasa la URL de AJAX al JS
     wp_localize_script('simulador-js', 'simulador_ajax', [
         'ajaxurl' => admin_url('admin-ajax.php'),
-        'excelData' => $data_array // Aquí se pasa el Excel en formato JS
+        'excelData' => $data_array, // Aquí se pasa el Excel en formato JS
+        'interestrate' => $simulador_interestrate // Pasa la tasa de interés
     ]);
 }
 add_action('wp_enqueue_scripts', 'simulador_enqueue_scripts');
@@ -56,7 +68,16 @@ add_action('wp_enqueue_scripts', 'simulador_enqueue_scripts');
  * Shortcode [simulador] para mostrar el contenedor principal del simulador en el frontend.
  * Incluye un loader y un contenedor para vistas SPA.
  */
-function simulador_shortcode() {
+
+function simulador_shortcode($atts) {
+    $atts = shortcode_atts([
+        'interestrate' => ''
+    ], $atts, 'simulador');
+
+    // se crea variable global para la tasa de interés
+    global $simulador_interestrate;
+    $simulador_interestrate = $atts['interestrate'];
+
     ob_start(); ?>
     <div class="content-all-simulator">
         <div id="loading" style="display:none;">Cargando...</div>

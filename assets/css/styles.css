@@ -224,6 +224,70 @@ select option:hover {
     width: 50%;
 }
 
+.custom-checkbox {
+    overflow: hidden;
+    position: relative;
+    border-radius: 0;
+    display: flex;
+    align-items: center;
+}
+
+.custom-checkbox label {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    border-radius: 0;
+    position: relative;
+}
+
+.custom-checkbox .dot-box {
+    position: relative;
+    border-radius: 100px;
+    transition: 0.25s;
+    padding: 0px 0px;
+    height: 16px;
+    width: 40px;
+    border: 1px solid var(--white);
+    margin-right: 10px;
+}
+
+.custom-checkbox .dot-box .dot {
+    border-radius: 100px;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    transition: 0.45s;
+    left: 4px;
+    background: white;
+    width: 10px;
+    height: 10px;
+}
+
+.custom-checkbox:hover .dot-box {
+    background: #a1a1a1;
+    border-color: #a1a1a1;
+}
+
+.custom-checkbox:hover .dot-box .dot {
+    background: var(--white);
+}
+
+.custom-checkbox input {
+    position: absolute;
+    left: 0;
+    top: 0;
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 100;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.custom-checkbox input:checked+.dot-box .dot {
+    left: calc(100% - 3px - 10px)
+}
+
 .percentage {
     display: flex;
     align-items: center;
@@ -367,12 +431,12 @@ tfoot td {
         font-size: 1em;
     }
 
-    .continue{
+    .continue {
         font-size: 1em;
     }
 }
 
-@media screen and (max-width: 1023px){
+@media screen and (max-width: 1023px) {
     #view-container {
         min-width: 95%;
         max-width: 95%;
@@ -382,7 +446,7 @@ tfoot td {
         font-size: 2em;
     }
 
-    .title span{
+    .title span {
         font: 85% / 1.5 Arial, Helvetica, sans-serif;
     }
 
@@ -390,13 +454,13 @@ tfoot td {
         font-size: 1.8em;
     }
 
-    .requirements-icons{
+    .requirements-icons {
         padding: 0;
         flex-wrap: wrap;
         justify-content: center;
     }
 
-    .requirements-icons>div{
+    .requirements-icons>div {
         width: 50%;
         flex-grow: initial;
         flex-basis: initial;
@@ -409,13 +473,14 @@ tfoot td {
     }
 }
 
-@media screen and (max-width: 767px){
+@media screen and (max-width: 767px) {
+
     /*426*/
-    .requirements-icons>div{
+    .requirements-icons>div {
         width: 100%;
     }
 
-    .form>div{
+    .form>div {
         flex-wrap: wrap;
     }
 
@@ -428,32 +493,32 @@ tfoot td {
         width: 100%;
     }
 
-    .content-btns{
+    .content-btns {
         flex-wrap: wrap;
     }
 }
 
-@media screen and (max-width: 425px){
+@media screen and (max-width: 425px) {
     .title h1 {
         font-size: 1.7em;
         line-height: 1em;
         padding: 0;
     }
 
-    .title span{
+    .title span {
         padding: 0;
     }
 
-    .requirements{
+    .requirements {
         padding: 20px;
     }
 
-    .requirements h3{
+    .requirements h3 {
         font-size: 1.4em;
         margin: 0 0 20px 0;
     }
 
-    .plan h3{
+    .plan h3 {
         font-size: 25px;
     }
 

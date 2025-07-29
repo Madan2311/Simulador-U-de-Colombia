@@ -88,6 +88,7 @@
                 </div>
             </div>
             
+            <h4>Carga de documentos</h4>
             <div class="content-inputs">
                 <div class="file-component">
                     <input type="file" id="employmentLetter" required />

@@ -1,44 +1,40 @@
 <?php
 
     $programs = [
-    1 => "Administración financiera",
-    2 => "Contaduría pública",
-    3 => "Derecho",
-    4 => "Comunicación y diseños ambientes digitales",
-    5 => "Seguridad y salud en el trabajo",
-    6 => "Sistemas de información",
-    7 => "Mercadeo e innovación comercial",
-    8 => "Tecnología seguridad digital",
-    9 => "Licenciatura modelos educativos flexibles",
-    10 => "Especialización finanzas y banca",
-    11 => "Especialización en NIIF",
-    12 => "Especialización gestión tributaria",
-    13 => "Especialización derecho daños",
-    14 => "Especialización contratación estatal",
-    15 => "Especialización derecho informático",
-    16 => "Especialización psicopedagogía",
-    17 => "Especialización análisis de datos"
+        "Administración financiera",
+        "Contaduría pública",
+        "Derecho",
+        "Comunicación y diseños ambientes digitales",
+        "Seguridad y salud en el trabajo",
+        "Sistemas de información",
+        "Mercadeo e innovación comercial",
+        "Tecnología seguridad digital",
+        "Licenciatura modelos educativos flexibles",
+        "Especialización finanzas y banca",
+        "Especialización en NIIF",
+        "Especialización gestión tributaria",
+        "Especialización derecho daños",
+        "Especialización contratación estatal",
+        "Especialización derecho informático",
+        "Especialización psicopedagogía",
+        "Especialización análisis de datos"
     ];
 
     $days = [
-        1 => "Sabatina",
-        2 => "Diurna",
-        3 => "Nocturna",
-        4 => "Distancia",
+        "Sabatina",
+        "Diurna",
+        "Nocturna",
+        "Distancia",
     ];
 
     $mode = [
-        1 => "Presencial",
-        2 => "Distancia",
+        "Presencial",
+        "Distancia",
     ];
 
     $typeOfStudent = [
-        1 => "Antiguo",
-        2 => "Nuevo",
-    ];
-
-    $typeOfScholarship = [
-
+        "Antiguo",
+        "Nuevo",
     ];
 
     //ordenar array
@@ -46,7 +42,6 @@
     asort($days);
     asort($mode);
     asort($typeOfStudent);
-    asort($typeOfScholarship);
 
 ?>
 
@@ -63,8 +58,8 @@
                 <div>
                     <label for="programs">Seleccionar programa</label>
                     <select name="select" id="programs" required>
-                        <?php foreach ($programs as $value => $label): ?>
-                            <option value="<?= $value ?>" id="programs-<? $value ?>"><?= htmlspecialchars($label) ?></option>
+                        <?php foreach ($programs as $value ): ?>
+                            <option value="<?= $value ?>" id="programs-<? $value ?>"><?= htmlspecialchars($value) ?></option>
                         <?php endforeach; ?>
                     </select>
                 </div>
@@ -72,8 +67,8 @@
                 <div>
                     <label for="days">Jornada</label>
                     <select name="select" id="days" required>
-                        <?php foreach ($days as $value => $label): ?>
-                            <option value="<?= $value ?>" id="days-<? $value ?>"><?= htmlspecialchars($label) ?></option>
+                        <?php foreach ($days as $value): ?>
+                            <option value="<?= $value ?>" id="days-<? $value ?>"><?= htmlspecialchars($value) ?></option>
                         <?php endforeach; ?>
                     </select>
                 </div>
@@ -83,8 +78,8 @@
                 <div>
                     <label for="mode">Modalidad</label>
                     <select name="select" id="mode" required>
-                        <?php foreach ($mode as $value => $label): ?>
-                            <option value="<?= $value ?>" id="mode-<? $value ?>"><?= htmlspecialchars($label) ?></option>
+                        <?php foreach ($mode as $value): ?>
+                            <option value="<?= $value ?>" id="mode-<? $value ?>"><?= htmlspecialchars($value) ?></option>
                         <?php endforeach; ?>
                     </select>
                 </div>
@@ -92,29 +87,10 @@
                 <div>
                     <label for="typeOfStudent">Tipo de estudiante</label>
                     <select name="select" id="typeOfStudent" required>
-                        <?php foreach ($typeOfStudent as $value => $label): ?>
-                            <option value="<?= $value ?>" id="typeOfStudent-<? $value ?>"><?= htmlspecialchars($label) ?></option>
+                        <?php foreach ($typeOfStudent as $value): ?>
+                            <option value="<?= $value ?>" id="typeOfStudent-<? $value ?>"><?= htmlspecialchars($value) ?></option>
                         <?php endforeach; ?>
                     </select>
-                </div>
-            </div>
-            
-            
-            <div class="content-inputs typeOfScholarship">
-                <div>
-                    <label for="typeOfScholarship">Tipo de beca</label>
-                    <select name="select" id="typeOfScholarship">
-                        <?php foreach ($typeOfScholarship as $value => $label): ?>
-                            <option value="<?= $value ?>" id="typeOfScholarship-<? $value ?>"><?= htmlspecialchars($label) ?></option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-                <div class="percentage">
-                    <label for="percentage">Porcentaje</label>
-                    <div>
-                        <input type="number" id="percentage" autocomplete="off" required />
-                        <p>%</p>
-                    </div>
                 </div>
             </div>
             
@@ -123,6 +99,27 @@
                 <select name="select" id="term" required>
                     <option value="">Selecciona una opción</option>
                 </select>
+            </div>
+
+            <div class="content-inputs typeOfScholarship">
+                <div class="custom-checkbox">
+                    <label style="margin:0;" for="typeOfScholarship">
+                        <input type="checkbox" id="typeOfScholarship" name="typeOfScholarship">
+                        <div class="dot-box">
+                            <div class="dot"></div>
+                        </div>
+                        ¿Tiene beca?
+                    </label>
+                </div>
+                <div class="percentage" id="percentage-scholarship" style="display: none;">
+                    <label for="percentage">Porcentaje</label>
+                    <div>
+                        <select name="select" id="percentage" >
+                            <option value="">Selecciona una opción</option>
+                        </select>
+                        <p>%</p>
+                    </div>
+                </div>
             </div>
             
         </div>
@@ -144,16 +141,6 @@
                 </tr>
             </thead>
             <tbody id="program-detail">
-                <tr>
-                    <td>3.661.700</td>
-                    <td>2.563.190</td>
-                    <td>1%</td>
-                    <td>22/07/2025</td>
-                    <td>1.794.233</td>
-                    <td>768.957</td>
-                    <td>89.712</td>
-                    <td>369.683</td>
-                </tr>
             </tbody>
         </table>
 
