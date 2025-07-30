@@ -13,7 +13,7 @@
           <p>Documentación requerida</p>
           <h5>
             - Carta laboral vigente.<br>
-            - Último comprobantes de nómina.<br>
+            - Último comprobante de nómina.<br>
             - Documento de identidad.
           </h5>
         </div>

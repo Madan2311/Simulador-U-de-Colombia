@@ -137,7 +137,7 @@ window.formDataState = {};
 
     // ------------------- //
     // validación de Jornada
-    $(document).on('change', '#days', function () {
+    $(document).on('change', '#mode', function () {
       syncJornadaWithModality();
       validateForm && validateForm();
     });
@@ -298,6 +298,7 @@ window.formDataState = {};
       formData.append('term', formDataState['term'] || '');
       formData.append('typeOfScholarship', formDataState['typeOfScholarship'] ? '1' : '0');
       formData.append('percentage', formDataState['percentage'] || '');
+      formData.append('scholarshipOrigin', formDataState['scholarshipOrigin'] || '');
 
       // Contenido HTML de las tablas
       formData.append('program_detail_html', formDataState['program_detail_html'] || '');
@@ -421,6 +422,7 @@ window.formDataState = {};
   function toggleScholarshipFields() {
     const $checked = $('#typeOfScholarship'); // Checkbox para tipo de beca
     const $percentageSelect = $('#percentage'); // Select para porcentaje de beca
+    const $originField = $('#origin-scholarship-group'); // Campo de origen de beca
 
     // si checked no esta seleccionado, no se muestra el campo porcentaje
     if (!$checked.is(':checked')) {
@@ -429,6 +431,7 @@ window.formDataState = {};
       $percentageSelect.empty().append('<option value="">Selecciona una opción</option>'); // Limpiar opciones
       $percentageSelect.attr('required', false); // Hacerlo no requerido
       $('#proofOfScholarship').removeAttr('required'); // Quitar requerido del archivo de prueba de beca
+      $originField.hide().find('input').val('').removeAttr('required');
       return;
     }
 
@@ -437,6 +440,7 @@ window.formDataState = {};
     $('#percentage').val(''); // Limpiar el campo al mostrarlo
     $percentageSelect.attr('required', true); // Hacerlo requerido
     $('#proofOfScholarship').attr('required', true); // Requerir archivo de prueba de beca
+    $originField.show().find('input').attr('required', true);
     // llenar el select de porcentaje de beca de 30% a 80% en incrementos de 5% 
     for (let i = 35; i <= 80; i += 5) {
       $('#percentage').append(`<option value="${i}">${i}%</option>`);

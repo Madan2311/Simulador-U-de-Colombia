@@ -246,6 +246,7 @@ function simulador_send_form() {
     $mode = sanitize_text_field($_POST['mode'] ?? '');
     $typeOfStudent = sanitize_text_field($_POST['typeOfStudent'] ?? '');
     $term = sanitize_text_field($_POST['term'] ?? '');
+    $scholarshipOrigin = sanitize_text_field($_POST['scholarshipOrigin'] ?? '');
     
     $program_detail_html = wp_kses_post($_POST['program_detail_html'] ?? '');
     $payment_plan_html = wp_kses_post($_POST['payment_plan_html'] ?? '');
@@ -274,6 +275,7 @@ function simulador_send_form() {
     $message .= "<tr><td style='$thStyle'>Modalidad</td><td style='$tdStyle'>{$mode}</td></tr>";
     $message .= "<tr><td style='$thStyle'>Tipo de estudiante</td><td style='$tdStyle'>{$typeOfStudent}</td></tr>";
     $message .= "<tr><td style='$thStyle'>Plazo</td><td style='$tdStyle'>{$term} meses</td></tr>";
+    $message .= "<tr><td style='$thStyle'>Origen de beca o descuento especial</td><td style='$tdStyle'>{$scholarshipOrigin}</td></tr>";
     $message .= "</table></div>";
 
     // 🔹 Detalle del Programa
@@ -283,7 +285,6 @@ function simulador_send_form() {
     $styledProgramDetail .= "<thead><tr>";
     $styledProgramDetail .= "<th style='$thStyle'>Valor matrícula</th>";
     $styledProgramDetail .= "<th style='$thStyle'>Valor neto matrícula</th>";
-    $styledProgramDetail .= "<th style='$thStyle'>Tasa de interés</th>";
     $styledProgramDetail .= "<th style='$thStyle'>Fecha</th>";
     $styledProgramDetail .= "<th style='$thStyle'>Monto del crédito</th>";
     $styledProgramDetail .= "<th style='$thStyle'>Cuota inicial</th>";

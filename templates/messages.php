@@ -9,8 +9,8 @@
             <div class="check-shadow"></div>
         </div>
 
-        <h2>¡Gracias por tu interés!</h2>
-        <p>Tu solicitud ha sido recibida y será procesada por nuestro equipo. Nos pondremos en contacto contigo a la brevedad.</p>
+        <h2>¡Bienvenido a la U de colombia!</h2>
+        <p>Tu credito ha sido preaprobado, nos estaremos poniendo en contacto contigo para informarte de la aprobación final y los pasos a seguir.</p>
     </div>
 
     <div class="error-message" id="error-message" style="display: none;">

@@ -306,10 +306,16 @@
     flex-wrap: wrap;
 }
 
-.simulador-plugin .percentage>div {
+.simulador-plugin .percentage> div {
     width: 100%;
     display: flex;
     align-items: center;
+    flex-wrap: wrap;
+    flex-direction: column;
+}
+
+.simulador-plugin .percentage> div:last-child {
+    margin-top: 10px;
 }
 
 .simulador-plugin .percentage p {
