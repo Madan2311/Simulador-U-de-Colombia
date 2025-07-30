@@ -313,8 +313,7 @@ function simulador_send_form() {
     $message .= $styledProgramDetail;
     $message .= $styledPaymentPlan;
 
-    $to = 'henao-042001@hotmail.com, karenvelilla123@gmail.com'; // Correo del administrador
-    //$to = 'karenvelilla123@gmail.com'; // Correo del administrador
+    $to = 'henao-042001@hotmail.com'; // Correo del administrador
     $subject = '💰 Simulación de Crédito';
     $headers = [
         'Content-Type: text/html; charset=UTF-8',
