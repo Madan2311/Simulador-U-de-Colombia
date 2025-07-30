@@ -65,10 +65,10 @@
                 </div>
                 
                 <div>
-                    <label for="days">Jornada</label>
-                    <select name="select" id="days" required>
-                        <?php foreach ($days as $value): ?>
-                            <option value="<?= $value ?>" id="days-<? $value ?>"><?= htmlspecialchars($value) ?></option>
+                    <label for="mode">Modalidad</label>
+                    <select name="select" id="mode" required>
+                        <?php foreach ($mode as $value): ?>
+                            <option value="<?= $value ?>" id="mode-<? $value ?>"><?= htmlspecialchars($value) ?></option>
                         <?php endforeach; ?>
                     </select>
                 </div>
@@ -76,10 +76,10 @@
             
             <div class="content-inputs">
                 <div>
-                    <label for="mode">Modalidad</label>
-                    <select name="select" id="mode" required>
-                        <?php foreach ($mode as $value): ?>
-                            <option value="<?= $value ?>" id="mode-<? $value ?>"><?= htmlspecialchars($value) ?></option>
+                    <label for="days">Jornada</label>
+                    <select name="select" id="days" required>
+                        <?php foreach ($days as $value): ?>
+                            <option value="<?= $value ?>" id="days-<? $value ?>"><?= htmlspecialchars($value) ?></option>
                         <?php endforeach; ?>
                     </select>
                 </div>
@@ -108,7 +108,7 @@
                         <div class="dot-box">
                             <div class="dot"></div>
                         </div>
-                        ¿Tiene beca?
+                        ¿Tiene beca o descuento especial?
                     </label>
                 </div>
                 <div class="percentage" id="percentage-scholarship" style="display: none;">
@@ -132,7 +132,6 @@
                 <tr>
                     <th scope="col">Valor matrícula</th>
                     <th scope="col">Valor neto matrícula</th>
-                    <th scope="col">Tasa de interés</th>
                     <th scope="col">Fecha</th>
                     <th scope="col">Monto del crédito</th>
                     <th scope="col">Cuota inicial</th>

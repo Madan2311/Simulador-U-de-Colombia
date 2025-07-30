@@ -24,7 +24,7 @@ window.formDataState = {};
             bindEvents();                   // Reasigna eventos
             validateForm();                 // Lanza validación general
             initFileInputs();               // Estilo de los tipo file
-            syncModalityWithJornada();      // validación de la jornada
+            syncJornadaWithModality();      // validación de la jornada
             restoreFormData();              // Restaurar los datos de los campos
             initializeFormDataState();      // Inicializa el objeto global con los datos del formulario
 
@@ -138,7 +138,7 @@ window.formDataState = {};
     // ------------------- //
     // validación de Jornada
     $(document).on('change', '#days', function () {
-      syncModalityWithJornada();
+      syncJornadaWithModality();
       validateForm && validateForm();
     });
 
@@ -231,7 +231,6 @@ window.formDataState = {};
         <tr>
             <td>${resultado.resumen.valorMatricula || 0}</td>
             <td>${resultado.resumen.matriculaNeta || 0}</td>
-            <td>${simulador_ajax.interestrate || 0}%</td>
             <td>${resultado.resumen.fechaInicio}</td>
             <td>${resultado.resumen.montoCredito || 0}</td>
             <td>${resultado.resumen.cuotaInicial || 0}</td>
@@ -439,7 +438,7 @@ window.formDataState = {};
     $percentageSelect.attr('required', true); // Hacerlo requerido
     $('#proofOfScholarship').attr('required', true); // Requerir archivo de prueba de beca
     // llenar el select de porcentaje de beca de 30% a 80% en incrementos de 5% 
-    for (let i = 30; i <= 80; i += 5) {
+    for (let i = 35; i <= 80; i += 5) {
       $('#percentage').append(`<option value="${i}">${i}%</option>`);
     }
   }
@@ -455,6 +454,17 @@ window.formDataState = {};
       $('#mode').prop('disabled', false);
     }
   }
+
+  function syncJornadaWithModality() {
+  const modalidad = $('#mode').val();
+  const isDistance = modalidad === 'Distancia'; // Modalidad 'Distancia'
+
+  if (isDistance) {
+    $('#days').val('Distancia').prop('disabled', true); // Jornada 'Distancia'
+  } else {
+    $('#days').prop('disabled', false);
+  }
+}
 
   // para restaurar los datos traidos desde el storage para cuando le den al botón de anterior
   // para limpiar los datos del storage cuando le den al botón enviar y cuando se refresca el sitio sessionStorage.clear();

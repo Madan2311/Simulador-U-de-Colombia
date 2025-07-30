@@ -13,8 +13,7 @@
           <p>Documentación requerida</p>
           <h5>
             - Carta laboral vigente.<br>
-            - Comprobantes de nómina.<br>
-            - Certificado de beca (si aplica).<br>
+            - Último comprobantes de nómina.<br>
             - Documento de identidad.
           </h5>
         </div>
@@ -25,7 +24,7 @@
         <div>
           <p>Plazo del crédito</p>
           <h5>
-            El tiempo y número de cuotas disponibles dependerán de la fecha seleccionada y el monto solicitado.
+            El tiempo y número de cuotas disponibles dependerán de la fecha de la solicitud y el monto solicitado.
           </h5>
         </div>
       </div>
