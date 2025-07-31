@@ -9,7 +9,7 @@
             <div class="check-shadow"></div>
         </div>
 
-        <h2>¡Bienvenido a la U de colombia!</h2>
+        <h2>¡Bienvenido a U DE COLOMBIA!</h2>
         <p>Tu credito ha sido preaprobado, nos estaremos poniendo en contacto contigo para informarte de la aprobación final y los pasos a seguir.</p>
     </div>
 
