@@ -10,10 +10,13 @@
 if (!defined('ABSPATH')) exit; // Evita el acceso directo al archivo
 
 require_once plugin_dir_path(__FILE__) . 'vendor/autoload.php'; // Autoload de dependencias (PhpSpreadsheet)
+require_once plugin_dir_path(__FILE__) . 'pdFiles/pagare.php'; // Archivo que contiene la función para generar el pagaré
 
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
-$simulador_interestrate = []; // Variable global para la tasa de interés
+$simulador_interestrate = 0; // Variable global para la tasa de interés
+date_default_timezone_set('America/Bogota');
+
 /**
  * Carga los scripts y estilos necesarios para el simulador en el frontend.
  * Incluye estilos personalizados, jQuery, Inputmask y el script principal del simulador.
@@ -231,6 +234,21 @@ add_action('admin_init', function () {
 add_action('wp_ajax_nopriv_simulador_send_form', 'simulador_send_form');
 add_action('wp_ajax_simulador_send_form', 'simulador_send_form');
 
+function numero_a_letras($numero) {
+    $f = new NumberFormatter("es", NumberFormatter::SPELLOUT);
+    return $f->format($numero);
+}
+
+function fecha_mes_en_letras($mesNumero) {
+    $meses = [
+        1 => 'ENERO', 2 => 'FEBRERO', 3 => 'MARZO',
+        4 => 'ABRIL', 5 => 'MAYO', 6 => 'JUNIO',
+        7 => 'JULIO', 8 => 'AGOSTO', 9 => 'SEPTIEMBRE',
+        10 => 'OCTUBRE', 11 => 'NOVIEMBRE', 12 => 'DICIEMBRE'
+    ];
+    return $meses[intval($mesNumero)] ?? '';
+}
+
 function simulador_send_form() {
     if (!isset($_POST['simulador_nonce']) || !wp_verify_nonce($_POST['simulador_nonce'], 'simulador_send_form')) {
         wp_send_json_error('Nonce inválido', 403);
@@ -250,6 +268,13 @@ function simulador_send_form() {
     
     $program_detail_html = wp_kses_post($_POST['program_detail_html'] ?? '');
     $payment_plan_html = wp_kses_post($_POST['payment_plan_html'] ?? '');
+
+    $dataPlan = isset($_POST['dataPlan']) ? json_decode(stripslashes($_POST['dataPlan']), true) : [];
+    $fechaFinal = sanitize_text_field($_POST['fechaFinal'] ?? '');
+    $interestrate = isset($_POST['interestrate']) ? floatval($_POST['interestrate']) : 0;
+
+    // Convertir $fechaFinal a formato dd/mm/yyyy
+    $fechaFinalFormateada = date("d/m/Y", strtotime($fechaFinal));
 
     if (empty($name) || empty($id) || empty($email) || !is_email($email)) {
         wp_send_json_error('Datos inválidos');
@@ -313,15 +338,64 @@ function simulador_send_form() {
     $message .= $styledProgramDetail;
     $message .= $styledPaymentPlan;
 
-    $to = 'analistacontable@udecolombia.edu.co'; // Correo del administrador
+    //$to = 'analistacontable@udecolombia.edu.co'; // Correo del administrador
+    $to = 'henao-042001@hotmail.com, karenvelilla123@gmail.com'; // Correo del administrador
     $subject = '💰 Simulación de Crédito';
     $headers = [
         'Content-Type: text/html; charset=UTF-8',
         "From: 💲 Simulación de Crédito para <{$name}> 💲"
     ];
 
+    // 1. Capturar datos del formulario
+    $nombre = sanitize_text_field($_POST['name']);
+    $cedula = sanitize_text_field($_POST['id']);
+    $plazo = floatval($_POST['term']);
+    
+    // 2. Convertir plazo a letras
+    $plazoStr = numero_a_letras($plazo);
+
+    // 3. Obtener cuota mensual desde tabla HTML
+    $cuota = floatval(str_replace('.', '', $dataPlan['cuotaMensual']));
+    $cuotaStr = strtoupper(numero_a_letras($cuota)) . " PESOS";
+
+    // 4. Obtener valor matrícula desde tabla HTML
+    $valor = floatval(str_replace('.', '', $dataPlan['valorMatricula']));
+    $valorStr = strtoupper(numero_a_letras($valor)) . " PESOS";
+
+    // 6. Día, mes, año actual
+    $dia = date('j');
+    $diaStr = strtoupper(numero_a_letras($dia));
+    $mesStr = fecha_mes_en_letras(date('n'));
+    $year = date('Y');
+
+    // 7. Generar pagaré en PDF (base64)
+    $pagare = generarPagarePDFBase64([
+        'valorMatricula' => '$'.$dataPlan['valorMatricula'],
+        'valorMatriculaSTR' => $valorStr,
+        'cuotaMensual' => '$'.$dataPlan['cuotaMensual'],
+        'cuotaMensualSTR' => $cuotaStr,
+        'interesrate' => $interestrate,
+        'plazo' => $plazo,
+        'plazoStr' => $plazoStr,
+        'fechaFinal' => $fechaFinalFormateada,
+        'dia' => $dia,
+        'diaStr' => $diaStr,
+        'mesStr' => $mesStr,
+        'year' => $year,
+        'nombre' => $nombre,
+        'cedula' => $cedula,
+        'urlImg' => plugin_dir_path(__FILE__) . 'assets/img/logo-u-de-colombia.png',
+    ]);
+
+    $upload_dir = wp_upload_dir();
+    $temp_dir = plugin_dir_path(__FILE__) . 'pdFiles/temp/';
+    $pdf_path = $tempdir . 'pagare' . $pagare['consecutivo'] . '.pdf';
+    file_put_contents($pdf_path, base64_decode($pagare['base64']));
+
     // Adjuntos
     $attachments = [];
+    $attachments[] = $pdf_path; // Pagaré en PDF
+
     foreach ($_FILES as $file) {
         if ($file['error'] === UPLOAD_ERR_OK) {
             $tmp_name = $file['tmp_name'];
@@ -333,6 +407,7 @@ function simulador_send_form() {
         }
     }
 
+    // Enviar el correo
     $sent = wp_mail($to, $subject, $message, $headers, $attachments);
 
     if ($sent) {

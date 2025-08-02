@@ -190,13 +190,8 @@ window.formDataState = {};
         return;
       }
 
-      // valorMatricula=valueProgramDiscount
-      // descuentoBeca=percentage
-      // tasaInteres=simulador_ajax.interestrate
-      // plazoMeses=term
-      // fechaInicioStr=date
-
       // Función para calcular la simulación de crédito
+      formDataState['interestrate'] = parseFloat(simulador_ajax.interestrate) || 0; // tasa de interés
       const resultado = calculateCreditSimulation(
         valueProgramDiscount,
         percentage,
@@ -211,7 +206,9 @@ window.formDataState = {};
       resultado.planPagos.forEach((pago, index) => {
         const { mes, fecha, cuota, interes, abonoCapital, saldo } = pago;
         const formattedDate = fecha
-
+        if(index === resultado.planPagos.length - 1) {
+          formDataState['fechaFinal'] = formattedDate;
+        }
         $tbody.append(`
           <tr>
               <td>${mes}</td>
@@ -250,6 +247,7 @@ window.formDataState = {};
         // Guardar tablas en formDataState
         formDataState['program_detail_html'] = $('#program-detail').html();
         formDataState['payment_plan_html'] = $('#table-plan').html();
+        formDataState['dataPlan'] = {...resultado.resumen};
       }
     });
 
@@ -303,6 +301,10 @@ window.formDataState = {};
       // Contenido HTML de las tablas
       formData.append('program_detail_html', formDataState['program_detail_html'] || '');
       formData.append('payment_plan_html', formDataState['payment_plan_html'] || '');
+
+      formData.append('dataPlan', JSON.stringify(formDataState['dataPlan'] || {}));
+      formData.append('fechaFinal', formDataState['fechaFinal'] || '');
+      formData.append('interestrate', formDataState['interestrate'] || '');
 
       // Validación de archivos requeridos
       const camposObligatorios = ['employmentLetter', 'paymentStubs', 'document'];
