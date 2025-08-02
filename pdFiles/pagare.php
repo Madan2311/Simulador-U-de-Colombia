@@ -9,6 +9,32 @@ function limpiarUTF8($texto) {
     return mb_convert_encoding($texto, 'UTF-8', 'UTF-8');
 }
 
+function generarEncabezado($logoBase64, $fecha, $paginaNum) {
+    return "
+    <header>
+    <table style='width:100%; border-collapse:collapse; border:1px solid #000; font-family:Arial, sans-serif; font-size:12px;'>
+      <tr>
+        <td style='border:1px solid #000; width:65%; text-align:center; padding:10px;'>
+          <img src='{$logoBase64}' style='height:60px;' alt='Logo U de Colombia'>
+        </td>
+        <td style='border:1px solid #000; width:35%; vertical-align:top; padding:5px; font-size:11px;'>
+          <div><strong>VERSIÓN:</strong> 4</div>
+          <div><strong>Fecha:<br></strong> {$fecha}</div>
+          <div><strong>CÓDIGO:</strong> F-VAF 011</div>
+          <div><strong>Página:</strong> {$paginaNum} de 3</div>
+        </td>
+      </tr>
+      <tr>
+        <td colspan='2' style='border:1px solid #000; text-align:center; background-color:#e0e0e0; font-weight:bold; padding:5px;'>
+          FORMATO PAGARÉ
+        </td>
+      </tr>
+    </table>
+    </header>
+    ";
+}
+
+
 function generarPagarePDFBase64(array $datos) {
     // 1. Obtener consecutivo desde opciones de WordPress
     $consecutivo = get_option('simulador_consecutivo_pagare', 1);
@@ -30,35 +56,18 @@ function generarPagarePDFBase64(array $datos) {
     }
 
     $fecha = date('d/m/Y');
-    $encabezado = "
-        <table style='width:100%; border-collapse:collapse; border:1px solid #000; font-family:Arial, sans-serif; font-size:12px;'>
-          <tr>
-            <td style='border:1px solid #000; width:65%; text-align:center; padding:10px;'>
-              <img src='{$logoBase64}' style='height:60px;' alt='Logo U de Colombia'>
-            </td>
-            <td style='border:1px solid #000; width:35%; vertical-align:top; padding:5px; font-size:11px;'>
-              <div><strong>VERSIÓN:</strong> 4</div>
-              <div><strong>Fecha:<br></strong> {$fecha}</div>
-              <div><strong>CÓDIGO:</strong> F-VAF 011</div>
-              <div><strong>Página:</strong> {PAGE_NUM} de 3</div>
-            </td>
-          </tr>
-          <tr>
-            <td colspan='2' style='border:1px solid #000; text-align:center; background-color:#e0e0e0; font-weight:bold; padding:5px;'>
-              FORMATO PAGARÉ
-            </td>
-          </tr>
-        </table>
-        <br><br>
-    ";
+    $encabezado1 = generarEncabezado($logoBase64, $fecha, 1);
+    $encabezado2 = generarEncabezado($logoBase64, $fecha, 2);
+    $encabezado3 = generarEncabezado($logoBase64, $fecha, 3);
 
     $footer = "
-        <br><br>
-        <div style='font-size:10px; text-align:center; color:#333; line-height:1.4; margin-top:40px;'>
-            Calle 56 Nº 41-147. Tel: 604 239 80 80. contacto@udecolombia.edu.co.<br>
-            www.udecolombia.edu.co - Medellín, Antioquia - Colombia<br>
-            Institución de Educación Superior sujeta a inspección y vigilancia por el Ministerio de Educación Nacional
-        </div>
+        <footer>
+          <div style='font-size:10px; text-align:center; color:#333; line-height:1.4; margin-top:40px;'>
+              Calle 56 Nº 41-147. Tel: 604 239 80 80. contacto@udecolombia.edu.co.<br>
+              www.udecolombia.edu.co - Medellín, Antioquia - Colombia<br>
+              Institución de Educación Superior sujeta a inspección y vigilancia por el Ministerio de Educación Nacional
+          </div>
+        </footer>
     ";
 
     $pagina1 =<<<HTML
@@ -229,22 +238,71 @@ function generarPagarePDFBase64(array $datos) {
     <head>
         <meta charset='UTF-8'>
         <style>
-            body { font-family: Arial, sans-serif; font-size: 12px; margin: 50px 40px; }
-            .page-break { page-break-after: always; }
+            @page {
+              margin: 200px 70px 100px ;
+            }
+
+            body {
+              font-family: Arial, sans-serif;
+              font-size: 13px;
+              margin: 0;
+              padding: 0;
+            }
+
+            header {
+              position: fixed;
+              top: -140px;
+              left: 0;
+              right: 0;
+              height: 100px;
+              text-align: center;
+            }
+
+            footer {
+              position: fixed;
+              bottom: -80px;
+              left: 0;
+              right: 0;
+              height: 100px;
+              font-size: 10px;
+              text-align: center;
+              line-height: 1.4;
+            }
+
+            .content {
+              text-align: justify;
+            }
+
+            .page-break {
+              page-break-after: always;
+            }
         </style>
     </head>
     <body>
-        {$encabezado}
-        {$pagina1}
-        {$footer}
+        <div class='content'>
+        <div>
+          {$encabezado1}
+          {$footer}
+          {$pagina1}
+        </div>
+
         <div class='page-break'></div>
-        {$encabezado}
-        {$pagina2}
-        {$footer}
+
+        <div>
+          {$encabezado2}
+          {$footer}
+          {$pagina2}
+        </div>
+
         <div class='page-break'></div>
-        {$encabezado}
-        {$pagina3}
-        {$footer}
+
+        <div>
+          {$encabezado3}
+          {$footer}
+          {$pagina3}
+        </div>
+      </div>
+        
     </body>
     </html>
     ";
