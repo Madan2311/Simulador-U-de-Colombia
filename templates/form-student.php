@@ -123,13 +123,13 @@
             <div class="content-inputs">
                 <div class="file-component">
                     <input type="file" id="proofOfScholarship" name="proofOfScholarship" accept=".pdf" />
-                    <label for="proofOfScholarship"><span class="material-symbols-outlined">upload</span><span class="text">Comprobante de beca</span></label>
+                    <label for="proofOfScholarship"><span class="material-symbols-outlined">upload</span><span class="text">Liquidación de matrícula Q10</span></label>
                     <span class="material-symbols-outlined close">close</span>
                 </div>
 
                 <div class="file-component">
                     <input type="file" id="document" name="document" accept=".pdf" required />
-                    <label for="document"><span class="material-symbols-outlined">upload</span><span class="text">Documento</span></label>
+                    <label for="document"><span class="material-symbols-outlined">upload</span><span class="text">Cédula de ciudadania</span></label>
                     <span class="material-symbols-outlined close">close</span>
                 </div>
             </div>

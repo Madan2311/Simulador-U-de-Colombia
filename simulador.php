@@ -15,7 +15,6 @@ require_once plugin_dir_path(__FILE__) . 'pdFiles/pagare.php'; // Archivo que co
 
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
-$simulador_interestrate = 0; // Variable global para la tasa de interés
 date_default_timezone_set('America/Bogota');
 
 /**
@@ -29,7 +28,6 @@ date_default_timezone_set('America/Bogota');
  */
 function simulador_enqueue_scripts()
 {
-    global $simulador_interestrate;
 
     // Estilos personalizados del simulador
     wp_enqueue_style('simulador-css', plugin_dir_url(__FILE__) . 'assets/css/styles.css');
@@ -65,7 +63,6 @@ function simulador_enqueue_scripts()
     wp_localize_script('simulador-js', 'simulador_ajax', [
         'ajaxurl' => admin_url('admin-ajax.php'),
         'excelData' => $data_array, // Aquí se pasa el Excel en formato JS
-        'interestrate' => $simulador_interestrate // Pasa la tasa de interés
     ]);
 }
 add_action('wp_enqueue_scripts', 'simulador_enqueue_scripts');
@@ -243,13 +240,9 @@ function simulador_shortcode($atts)
     $atts = shortcode_atts([
         'interestrate' => ''
     ], $atts, 'simulador');
-
-    // se crea variable global para la tasa de interés
-    global $simulador_interestrate;
-    $simulador_interestrate = $atts['interestrate'];
-
+    
     ob_start(); ?>
-    <div class="content-all-simulator simulador-plugin">
+    <div class="content-all-simulator simulador-plugin" data-interestrate="<?php echo esc_attr($atts['interestrate']); ?>">
         <div id="loading" style="display:none;">
             <div class="circle-loader">
                 <div class="circle circle-1"></div>

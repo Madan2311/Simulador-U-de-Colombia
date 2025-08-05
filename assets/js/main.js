@@ -185,7 +185,7 @@ window.formDataState = {};
       sessionStorage.removeItem('dataPlan');
       sessionStorage.removeItem('fechaFinal');
     });
-    
+
     // Máscara para el campo celular
     $(document).on('focus', '#celPhone', function () {
       $(this).inputmask('999 999 9999', {
@@ -217,6 +217,7 @@ window.formDataState = {};
       const typeOfStudent = $('#typeOfStudent').val();
       const term = $('#term').val();
       const percentage = (parseInt($('#percentage').val()) || 0) / 100;
+      const checked = $('#typeOfScholarship').is(':checked');
 
       const date = new Date();
       const mapData = mapExcelData(simulador_ajax.excelData, program, day, modality, typeOfStudent);
@@ -229,15 +230,20 @@ window.formDataState = {};
         dateDiscountOne.split('/').reverse().join('-'); // formatear fecha a YYYY-MM-DD
         dateDiscountTwo.split('/').reverse().join('-'); // formatear fecha a YYYY-MM-DD
 
-        if (date <= new Date(dateDiscountOne)) {
-          const discountReplace = mapData[0][8].replace(/[ ,$]/g, "");
-          valueProgramDiscount = parseFloat(discountReplace) || 0;
-        } else if (date <= new Date(dateDiscountTwo)) {
-          const discountReplace = mapData[0][11].replace(/[ ,$]/g, "");
-          valueProgramDiscount = parseFloat(discountReplace) || 0;
-        } else {
+        if (checked) {
           const discountReplace = mapData[0][13].replace(/[ ,$]/g, "");
           valueProgramDiscount = parseFloat(discountReplace) || 0;
+        } else {
+          if (date <= new Date(dateDiscountOne)) {
+            const discountReplace = mapData[0][8].replace(/[ ,$]/g, "");
+            valueProgramDiscount = parseFloat(discountReplace) || 0;
+          } else if (date > new Date(dateDiscountOne) && date <= new Date(dateDiscountTwo)) {
+            const discountReplace = mapData[0][11].replace(/[ ,$]/g, "");
+            valueProgramDiscount = parseFloat(discountReplace) || 0;
+          } else {
+            const discountReplace = mapData[0][13].replace(/[ ,$]/g, "");
+            valueProgramDiscount = parseFloat(discountReplace) || 0;
+          }
         }
       }
 
@@ -248,13 +254,13 @@ window.formDataState = {};
         $('#message-program-nofound').addClass('show'); // mostrar mensaje si no hay valor
         return;
       }
-
+      const interestrate = $('.content-all-simulator.simulador-plugin').data('interestrate')
       // Función para calcular la simulación de crédito
-      formDataState['interestrate'] = parseFloat(simulador_ajax.interestrate) || 0; // tasa de interés
+      formDataState['interestrate'] = parseFloat(interestrate) || 0; // tasa de interés
       const resultado = calculateCreditSimulation(
         valueProgramDiscount,
         percentage,
-        (parseFloat(simulador_ajax.interestrate) || 0) / 100,
+        (parseFloat(interestrate) || 0) / 100,
         parseInt(term),
         formatDateToYMD(date)
       );
