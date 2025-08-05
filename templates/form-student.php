@@ -66,26 +66,43 @@
         <div class="form">
             <div class="content-inputs">
                 <div>
-                    <label for="name">Nombre completo</label>
+                    <label for="name">Primer nombre</label>
                     <input type="text" id="name" required autocomplete="off" />
                 </div>
                 
                 <div>
+                    <label for="secondName">Segundo nombre</label>
+                    <input type="text" id="secondName" autocomplete="off" />
+                </div>
+            </div>
+
+            <div class="content-inputs">
+                <div>
+                    <label for="lastName">Primer apellido</label>
+                    <input type="text" id="lastName" required autocomplete="off" />
+                </div>
+                
+                <div>
+                    <label for="secondLastName">Segundo apellido</label>
+                    <input type="text" id="secondLastName" autocomplete="off" />
+                </div>
+            </div>
+
+            <div class="content-inputs">
+                <div>
                     <label for="id">Número de indentificación</label>
                     <input type="number" id="id" required autocomplete="off" />
                 </div>
-            </div>
-            
-            <div class="content-inputs">
+
                 <div>
                     <label for="celPhone">Célular</label>
                     <input type="text" id="celPhone" required autocomplete="off" />
                 </div>
-
-                <div>
-                    <label for="email">Correo</label>
-                    <input type="email" id="email" required autocomplete="off" />
-                </div>
+            </div>
+            
+            <div style="margin: 0 5px;">
+                <label for="email">Correo</label>
+                <input type="email" id="email" required autocomplete="off" />
             </div>
             
             <h4>Carga de documentos</h4>
@@ -122,8 +139,6 @@
 
     <div class="content-btns">
         <button class="continue" id="previous-student">Anterior</button>
-        <button class="continue" id="send" disabled>Enviar</button>
+        <button class="continue" id="next-student" disabled >Continuar</button>
     </div>
 </div>
-
-<input type="hidden" id="simulador_nonce" value="<?php echo wp_create_nonce('simulador_send_form'); ?>">

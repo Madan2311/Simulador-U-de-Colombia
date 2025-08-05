@@ -11,6 +11,10 @@
 
         <h2>¡Bienvenido a U DE COLOMBIA!</h2>
         <p>Tu credito ha sido preaprobado, nos estaremos poniendo en contacto contigo para informarte de la aprobación final y los pasos a seguir.</p>
+
+        <div class="content-btns">
+            <button class="continue" id="previous-home">Volver al inicio</button>
+        </div>
     </div>
 
     <div class="error-message" id="error-message" style="display: none;">
@@ -25,6 +29,10 @@
         </div>
 
         <h2>¡Ups! Algo salió mal.</h2>
-        <p>Hubo un error al procesar tu solicitud. Por favor, intenta nuevamente más tarde o contacta a nuestro soporte.</p>
+        <p id="mensajeError">Hubo un error al procesar tu solicitud. Por favor, intenta nuevamente más tarde o contacta a nuestro soporte.</p>
+
+        <div class="content-btns">
+            <button class="continue" id="previous-home">Volver al inicio</button>
+        </div>
     </div>
 </div>

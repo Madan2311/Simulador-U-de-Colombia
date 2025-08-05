@@ -7,6 +7,31 @@ window.formDataState = {};
     loadView('details');
     //loadView('messages');
     sessionStorage.clear(); // limpia el storage al cargar el sitio
+    const camposAObservar = [
+      '#programs',
+      '#mode',
+      '#days',
+      '#typeOfStudent',
+      '#term',
+      '#typeOfScholarship',
+      '#percentage',
+      '#scholarshipOrigin'
+    ];
+
+    // Llamar el login al cargar el simulador
+    $.ajax({
+      url: simulador_ajax.ajaxurl,
+      method: 'POST',
+      data: {
+        action: 'simulador_login_firma'
+      },
+      success: function (response) {
+        console.log('Login firmado OK:', response);
+      },
+      error: function (error) {
+        console.error('Error al hacer login firmado:', error);
+      }
+    });
 
     // ------------------- //
     // Función para cargar vistas por AJAX
@@ -35,12 +60,17 @@ window.formDataState = {};
 
             if (viewPath === 'messages') {
               const status = sessionStorage.getItem('formSuccess');
+              const errorMsg = sessionStorage.getItem('formErrorMessage');
               if (status === '1') {
                 $('#success-message').show();
                 $('#error-message').hide();
               } else {
                 $('#error-message').show();
                 $('#success-message').hide();
+                if (errorMsg) {
+                  $('#mensajeError').text(errorMsg); // Reemplaza el texto del error
+                  sessionStorage.removeItem('formErrorMessage');
+                }
               }
               sessionStorage.removeItem('formSuccess'); // limpiar después
             }
@@ -63,6 +93,8 @@ window.formDataState = {};
       $(document).on('click', '#continue-program', () => switchView('form-student'));
       $(document).on('click', '#previous-program', () => switchView('details'));
       $(document).on('click', '#previous-student', () => switchView('form-program'));
+
+      $(document).on('click', '#previous-confirm-student', () => switchView('form-student'));
     }
 
     // Cambio de vista con efecto de carga
@@ -111,9 +143,11 @@ window.formDataState = {};
       // Email simple
       const emailVal = $('#email').val();
       if (emailVal && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailVal)) isValid = false;
+      $('#emailStudent').innertHTML = emailVal;
 
       // Validar celular con máscara
       if (!$('#celPhone').inputmask('isComplete')) isValid = false;
+      $('#cellStudent').innertHTML = $('#celPhone').val();
 
       // Si hay tipo de beca seleccionado, el archivo es requerido
       const tieneBeca = $('#typeOfScholarship').is(':checked');
@@ -123,10 +157,35 @@ window.formDataState = {};
         isValid = false;
       }
 
+      $('#next-student').prop('disabled', !isValid)
       $('#send').prop('disabled', !isValid);
     }
 
     // ------------------- //
+    $(document).on('change', camposAObservar.join(','), function () {
+      // Limpiar contenido de las tablas
+      $('#program-detail').empty();
+      $('#table-plan').empty();
+
+      // Ocultar contenedores de tablas
+      $('#content-plan').removeClass('show');
+      $('#message-program-nofound').removeClass('show');
+      $('#payment-plan').removeClass('loaded');
+      $('#continue-program').prop('disabled', true);
+
+      // Eliminar los datos del estado
+      delete formDataState['program_detail_html'];
+      delete formDataState['payment_plan_html'];
+      delete formDataState['dataPlan'];
+      delete formDataState['fechaFinal'];
+
+      // También limpiar del sessionStorage si se requiere
+      sessionStorage.removeItem('program_detail_html');
+      sessionStorage.removeItem('payment_plan_html');
+      sessionStorage.removeItem('dataPlan');
+      sessionStorage.removeItem('fechaFinal');
+    });
+    
     // Máscara para el campo celular
     $(document).on('focus', '#celPhone', function () {
       $(this).inputmask('999 999 9999', {
@@ -206,7 +265,7 @@ window.formDataState = {};
       resultado.planPagos.forEach((pago, index) => {
         const { mes, fecha, cuota, interes, abonoCapital, saldo } = pago;
         const formattedDate = fecha
-        if(index === resultado.planPagos.length - 1) {
+        if (index === resultado.planPagos.length - 1) {
           formDataState['fechaFinal'] = formattedDate;
         }
         $tbody.append(`
@@ -247,7 +306,7 @@ window.formDataState = {};
         // Guardar tablas en formDataState
         formDataState['program_detail_html'] = $('#program-detail').html();
         formDataState['payment_plan_html'] = $('#table-plan').html();
-        formDataState['dataPlan'] = {...resultado.resumen};
+        formDataState['dataPlan'] = { ...resultado.resumen };
       }
     });
 
@@ -270,22 +329,81 @@ window.formDataState = {};
     });
 
     // ------------------- //
+    $(document).on('click', '#next-student, #sendCode', function (e) {
+      e.preventDefault();
+
+      $(this).prop('disabled', true);
+      $('#view-container').hide();   // Oculta el formulario
+      $('#loading').show();
+
+      const primerNombre = formDataState['name'];
+      const segundoNombre = formDataState['secondName'];
+      const primerApellido = formDataState['lastName'];
+      const segundoApellido = formDataState['secondLastName'];
+      const documento = formDataState['id'];
+      const correo = formDataState['email'];
+      const celular = parseFloat(formDataState['celPhone'].replace(/[ ,$]/g, ''));
+
+      $.ajax({
+        url: simulador_ajax.ajaxurl, // Asegúrate de que esté definido en tu PHP
+        method: 'POST',
+        dataType: 'json',
+        data: {
+          action: 'simulador_certificado_handler',
+          tipoDocumento: 1,
+          primerNombre,
+          segundoNombre,
+          primerApellido,
+          segundoApellido,
+          documento,
+          correo,
+          celular,
+          notificacion: 3 //tipo de notificación
+        },
+        success: function (response) {
+          $('#loading').hide();
+          if (response && response.data && response.data.estado === 0) {
+            switchView('confirm-student');
+          } else {
+            // Guarda el mensaje de error en sessionStorage
+            sessionStorage.setItem('formSuccess', '0');
+            sessionStorage.setItem('formErrorMessage', response.data?.mensaje || 'Hubo un problema al solicitar el certificado.');
+            switchView('messages');
+          }
+        },
+        error: function (xhr, status, error) {
+          $('#loading').hide();
+          sessionStorage.setItem('formSuccess', '0');
+          sessionStorage.setItem('formErrorMessage', error || 'No se pudo conectar con el servidor.');
+          switchView('messages');
+        }
+      });
+
+
+    })
+
+    // ------------------- //
     // Envío del formulario
     $(document).on('click', '#send', function (e) {
       e.preventDefault();
 
+      if ($(this).prop('disabled')) return;
+
       // se ponen el disable para evitar múltiples envíos
       $(this).prop('disabled', true);
+      $('#view-container').hide();   // Oculta el formulario
+      $('#loading').show();
+
       $('#previous-studen').prop('disabled', true);
 
       const formData = new FormData();
-
+      const fullName = construirNombreCompleto(formDataState['name'], formDataState['secondName'], formDataState['lastName'], formDataState['secondLastName']);
       // Datos básicos
       formData.append('action', 'simulador_send_form');
       formData.append('simulador_nonce', $('#simulador_nonce').val());
 
       // Desde formDataState
-      formData.append('name', formDataState['name'] || '');
+      formData.append('name', fullName || '');
       formData.append('id', formDataState['id'] || '');
       formData.append('celPhone', formDataState['celPhone'] || '');
       formData.append('email', formDataState['email'] || '');
@@ -306,36 +424,21 @@ window.formDataState = {};
       formData.append('fechaFinal', formDataState['fechaFinal'] || '');
       formData.append('interestrate', formDataState['interestrate'] || '');
 
-      // Validación de archivos requeridos
-      const camposObligatorios = ['employmentLetter', 'paymentStubs', 'document'];
-      let archivosValidos = true;
-
-      camposObligatorios.forEach(id => {
-        const fileInput = document.getElementById(id);
-        if (!fileInput || fileInput.files.length === 0) {
-          archivosValidos = false;
-        }
-      });
-
-      // Solo si tiene beca, se debe validar también el comprobante
-      if (formDataState['typeOfScholarship']) {
-        const becaInput = document.getElementById('proofOfScholarship');
-        if (!becaInput || becaInput.files.length === 0) {
-          archivosValidos = false;
-        }
-      }
-
-      if (!archivosValidos) {
-        console.log('❌ Faltan archivos requeridos. Por favor, adjunta todos los archivos necesarios.');
-        return;
-      }
+      formData.append('codeSoap', formDataState['codeSoap'] || '');
 
       // Adjuntar archivos
-      $('#view-container input[type="file"]').each(function () {
-        if (this.files.length > 0) {
-          formData.append(this.name, this.files[0]);
-        }
-      });
+      if (formDataState['employmentLetter_temp']) {
+        formData.append('employmentLetter_temp', formDataState['employmentLetter_temp']);
+      }
+      if (formDataState['paymentStubs_temp']) {
+        formData.append('paymentStubs_temp', formDataState['paymentStubs_temp']);
+      }
+      if (formDataState['document_temp']) {
+        formData.append('document_temp', formDataState['document_temp']);
+      }
+      if (formDataState['proofOfScholarship_temp']) {
+        formData.append('proofOfScholarship_temp', formDataState['proofOfScholarship_temp']);
+      }
 
       fetch(simulador_ajax.ajaxurl, {
         method: 'POST',
@@ -343,6 +446,7 @@ window.formDataState = {};
       })
         .then(res => res.json())
         .then(res => {
+          $('#loading').hide();
           if (res.success) {
             sessionStorage.clear(); // Limpia otros datos
             sessionStorage.setItem('formSuccess', '1');
@@ -350,13 +454,22 @@ window.formDataState = {};
           } else {
             sessionStorage.clear(); // Limpia otros datos
             sessionStorage.setItem('formSuccess', '0');
+            sessionStorage.setItem('formErrorMessage', res.data?.mensaje || 'Hubo un problema con la autenticación.');
             switchView('messages');
           }
         })
         .catch(err => {
-          console.error('❌ Error en envío:', err);
-          console.log('❌ Error de red al enviar.');
+          $('#loading').hide();
+          sessionStorage.setItem('formSuccess', '0');
+          sessionStorage.setItem('formErrorMessage', `Error en envío: ${err}` || 'Error de red al enviar.');
+          switchView('messages');
         });
+    });
+
+    $(document).on('click', '#previous-home', function (e) {
+      limpiarArchivosTemporales();
+      sessionStorage.clear(); // Limpia otros datos
+      switchView('details');
     });
 
     // Detectar cambios para validar formularios dinámicamente
@@ -376,8 +489,10 @@ window.formDataState = {};
 
         // Cambio de archivo
         $input.on('change', function () {
+          const file = this.files[0];
           const fileName = $input[0].files[0]?.name || '';
-          if (fileName) {
+
+          if (file) {
             $labelText.text(fileName);
             $labelIcon.hide();
             $removeIcon.show();
@@ -385,7 +500,31 @@ window.formDataState = {};
             $labelText.text(labelDefault);
             $labelIcon.show();
             $removeIcon.hide();
+            return
           }
+
+          const formData = new FormData();
+          formData.append('action', 'simulador_upload_temp');
+          formData.append('file', file);
+          formData.append('field', $input.attr('id'));
+
+          fetch(simulador_ajax.ajaxurl, {
+            method: 'POST',
+            body: formData
+          })
+            .then(res => res.json())
+            .then(res => {
+              if (res.success) {
+                // Guarda la ruta temporal en formDataState
+                sessionStorage.setItem($input.attr('id'), + "_temp", res.data.filepath);
+                formDataState[$input.attr('id') + '_temp'] = res.data.filepath;
+              } else {
+                console.log('Error al subir archivo: ' + (res.data?.message || ''));
+              }
+            })
+            .catch(() => {
+              console.log('Error de red al subir archivo.');
+            });
         });
 
         // Eliminar archivo
@@ -433,6 +572,7 @@ window.formDataState = {};
       $percentageSelect.empty().append('<option value="">Selecciona una opción</option>'); // Limpiar opciones
       $percentageSelect.attr('required', false); // Hacerlo no requerido
       $('#proofOfScholarship').removeAttr('required'); // Quitar requerido del archivo de prueba de beca
+      $('#scholarshipOrigin').removeAttr('required');
       $originField.hide().find('input').val('').removeAttr('required');
       return;
     }
@@ -442,6 +582,7 @@ window.formDataState = {};
     $('#percentage').val(''); // Limpiar el campo al mostrarlo
     $percentageSelect.attr('required', true); // Hacerlo requerido
     $('#proofOfScholarship').attr('required', true); // Requerir archivo de prueba de beca
+    $('#scholarshipOrigin').attr('required', true);
     $originField.show().find('input').attr('required', true);
     // llenar el select de porcentaje de beca de 30% a 80% en incrementos de 5% 
     for (let i = 35; i <= 80; i += 5) {
@@ -462,15 +603,15 @@ window.formDataState = {};
   }
 
   function syncJornadaWithModality() {
-  const modalidad = $('#mode').val();
-  const isDistance = modalidad === 'Distancia'; // Modalidad 'Distancia'
+    const modalidad = $('#mode').val();
+    const isDistance = modalidad === 'Distancia'; // Modalidad 'Distancia'
 
-  if (isDistance) {
-    $('#days').val('Distancia').prop('disabled', true); // Jornada 'Distancia'
-  } else {
-    $('#days').prop('disabled', false);
+    if (isDistance) {
+      $('#days').val('Distancia').prop('disabled', true); // Jornada 'Distancia'
+    } else {
+      $('#days').prop('disabled', false);
+    }
   }
-}
 
   // para restaurar los datos traidos desde el storage para cuando le den al botón de anterior
   // para limpiar los datos del storage cuando le den al botón enviar y cuando se refresca el sitio sessionStorage.clear();
@@ -526,6 +667,34 @@ window.formDataState = {};
       const value = type === 'checkbox' ? $field.is(':checked') : $field.val();
 
       formDataState[id] = value;
+    });
+  }
+
+  function construirNombreCompleto(primerNombre, segundoNombre, primerApellido, segundoApellido) {
+    const partes = [];
+
+    if (primerNombre) partes.push(primerNombre.trim());
+    if (segundoNombre) partes.push(segundoNombre.trim());
+    if (primerApellido) partes.push(primerApellido.trim());
+    if (segundoApellido) partes.push(segundoApellido.trim());
+
+    return partes.join(' ');
+  }
+
+  function limpiarArchivosTemporales() {
+    $.ajax({
+      url: simulador_ajax.ajaxurl,
+      method: 'POST',
+      dataType: 'json',
+      data: {
+        action: 'limpiar_temp',
+      },
+      success: function (res) {
+        console.log('Archivos temporales eliminados.');
+      },
+      error: function (err) {
+        console.error('Error al eliminar archivos temporales.', err);
+      }
     });
   }
 

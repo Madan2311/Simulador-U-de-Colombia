@@ -45,7 +45,7 @@ function generarPagarePDFBase64(array $datos) {
     $templatePath = plugin_dir_path(__FILE__) . 'plantillas/formato-pagare-y-carta-de-instrucciones.docx';
     $tempDir = plugin_dir_path(__FILE__) . 'temp/';
     if (!file_exists($tempDir)) mkdir($tempDir, 0755, true);
-    $tempDocx = $tempDir . "pagare_{$consecutivoStr}.docx";
+    $tempDocx = $tempDir . "pagare{$consecutivoStr}.docx";
 
     // Cargar imagen y convertir a base64
     $logoPath = $datos['urlImg'];
@@ -315,16 +315,16 @@ function generarPagarePDFBase64(array $datos) {
     $pdfOutput = $dompdf->output();
 
     // 7. Guardar temporal y codificar en base64
-    $tempPdf = $tempDir . "pagare_{$consecutivoStr}.pdf";
+    $tempPdf = $tempDir . "pagare{$consecutivoStr}.pdf";
     file_put_contents($tempPdf, $pdfOutput);
     $pdfBase64 = base64_encode($pdfOutput);
-
+    
     // 8. Limpiar temporal .docx
     @unlink($tempDocx);
 
     return [
         'base64' => $pdfBase64,
-        'filename' => "Pagare_{$consecutivoStr}.pdf",
+        'filename' => "pagare{$consecutivoStr}.pdf",
         'consecutivo' => $consecutivoStr,
     ];
 }

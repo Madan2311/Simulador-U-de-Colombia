@@ -15,7 +15,7 @@
         'opsz' 24
 }
 
-.content-all-simulator.simulador-plugin  {
+.content-all-simulator.simulador-plugin {
     width: 100%;
     background-color: transparent;
     box-sizing: border-box;
@@ -27,6 +27,7 @@
     padding: 5% 0;
     font-family: "Archivo", Sans-serif !important;
     font-size: initial;
+    position: relative;
 }
 
 .simulador-plugin #view-container {
@@ -83,6 +84,29 @@
     font-size: 32px;
     margin: 0 0 34px 0;
     color: var(--white);
+}
+
+.simulador-plugin .requirements p {
+    display: block;
+    color: var(--white);
+    text-align: center;
+}
+
+.simulador-plugin .requirements .sendCode {
+    cursor: pointer;
+    transition: all 0.5s ease;
+    text-decoration: underline;
+    text-align: center;
+    color: var(--white);
+    display: block;
+    margin: 0 auto;
+    left: 0;
+    right: 0;
+    width: max-content;
+}
+
+.simulador-plugin .requirements .sendCode:hover {
+    color: var(--highlighter);
 }
 
 .simulador-plugin .requirements h4 {
@@ -165,6 +189,15 @@
     color: var(--major);
 }
 
+.simulador-plugin .messages .continue {
+    border: 2px solid var(--highlighter);
+}
+
+.simulador-plugin .messages .continue:hover {
+    color: var(--highlighter);
+    border: 2px solid var(--white);
+}
+
 .simulador-plugin .continue:disabled {
     background-color: #ccc;
     border-color: #ccc;
@@ -190,6 +223,10 @@
 .simulador-plugin .content-inputs>div {
     width: 50%;
     margin: 0 5px;
+}
+
+.simulador-plugin .formValidateCode .content-inputs {
+    justify-content: center;
 }
 
 .simulador-plugin label {
@@ -306,7 +343,7 @@
     flex-wrap: wrap;
 }
 
-.simulador-plugin .percentage> div {
+.simulador-plugin .percentage>div {
     width: 100%;
     display: flex;
     align-items: center;
@@ -314,7 +351,7 @@
     flex-direction: column;
 }
 
-.simulador-plugin .percentage> div:last-child {
+.simulador-plugin .percentage>div:last-child {
     margin-top: 10px;
 }
 
@@ -422,12 +459,77 @@
 }
 
 .simulador-plugin #loading {
-    text-align: center;
-    font-weight: bold;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background: var(--white);
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.simulador-plugin #loading .circle-loader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.simulador-plugin #loading .circle {
+  position: absolute;
+  border: 3.5px solid transparent;
+  border-radius: 50%;
+  animation: rotate 3s infinite ease-in-out;
+}
+
+.simulador-plugin #loading .circle-1 {
+  width: 200px;
+  height: 200px;
+  border-top-color: var(--highlighter);
+  border-right-color: var(--highlighter);
+  animation-delay: -0.15s;
+}
+
+.simulador-plugin #loading .circle-2 {
+  width: 150px;
+  height: 150px;
+  border-top-color: var(--secondary);
+  border-right-color: var(--secondary);
+  animation-delay: -0.3s;
+}
+
+.simulador-plugin #loading .circle-3 {
+  width: 100px;
+  height: 100px;
+  border-top-color: var(--additional);
+  border-right-color: var(--additional);
+  animation-delay: -0.45s;
+}
+
+.simulador-plugin #loading .circle-4 {
+  width: 50px;
+  height: 50px;
+  border-top-color: var(--major);
+  border-right-color: var(--major);
+  animation-delay: -0.6s;
+}
+
+@keyframes rotate {
+  50% {
+    transform: rotate(360deg);
+  }
+}
+
+.simulador-plugin #loading .timer-text {
+  position: absolute;
+  font-size: 48px;
+  color: black;
 }
 
 .simulador-plugin .success-message,
-.simulador-plugin .error-message{
+.simulador-plugin .error-message {
     text-align: center;
     justify-content: center;
     display: flex;
@@ -467,7 +569,7 @@
     box-sizing: border-box;
 }
 
-.simulador-plugin .message-program-nofound h3{
+.simulador-plugin .message-program-nofound h3 {
     display: block;
     width: 100%;
     letter-spacing: -.6px;
@@ -478,48 +580,48 @@
     font-weight: 700;
 }
 
-.simulador-plugin .message-program-nofound p{
+.simulador-plugin .message-program-nofound p {
     text-align: center;
 }
 
 .simulador-plugin .check-container {
-	width: 6.25rem;
-	height: 7.5rem;
-	display: flex;
-	flex-flow: column;
-	align-items: center;
-	justify-content: space-between;
+    width: 6.25rem;
+    height: 7.5rem;
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    justify-content: space-between;
 
-	.check-background {
-		width: 100%;
-		height: calc(100% - 1.25rem);
-		background: linear-gradient(to bottom right, #5de593, #41d67c);
-		box-shadow: 0px 0px 0px 65px rgba(255, 255, 255, 0.25) inset,
-			0px 0px 0px 65px rgba(255, 255, 255, 0.25) inset;
-		transform: scale(0.84);
-		border-radius: 50%;
-		animation: animateContainer 0.75s ease-out forwards 0.75s;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		opacity: 0;
+    .check-background {
+        width: 100%;
+        height: calc(100% - 1.25rem);
+        background: linear-gradient(to bottom right, #5de593, #41d67c);
+        box-shadow: 0px 0px 0px 65px rgba(255, 255, 255, 0.25) inset,
+            0px 0px 0px 65px rgba(255, 255, 255, 0.25) inset;
+        transform: scale(0.84);
+        border-radius: 50%;
+        animation: animateContainer 0.75s ease-out forwards 0.75s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
 
-		svg {
-			width: 65%;
-			transform: translateY(0.25rem);
-			stroke-dasharray: 80;
-			stroke-dashoffset: 80;
-			animation: animateCheck 0.35s forwards 1.25s ease-out;
-		}
-	}
+        svg {
+            width: 65%;
+            transform: translateY(0.25rem);
+            stroke-dasharray: 80;
+            stroke-dashoffset: 80;
+            animation: animateCheck 0.35s forwards 1.25s ease-out;
+        }
+    }
 
-	.check-shadow {
-		bottom: calc(-15% - 5px);
-		left: 0;
-		border-radius: 50%;
-		background: radial-gradient(closest-side, rgba(73, 218, 131, 1), transparent);
-		animation: animateShadow 0.75s ease-out forwards 0.75s;
-	}
+    .check-shadow {
+        bottom: calc(-15% - 5px);
+        left: 0;
+        border-radius: 50%;
+        background: radial-gradient(closest-side, rgba(73, 218, 131, 1), transparent);
+        animation: animateShadow 0.75s ease-out forwards 0.75s;
+    }
 }
 
 .simulador-plugin .error-message .check-container {
@@ -563,67 +665,76 @@
 }
 
 @keyframes animateContainer {
-	0% {
-		opacity: 0;
-		transform: scale(0);
-		box-shadow: 0px 0px 0px 65px rgba(255, 255, 255, 0.25) inset,
-			0px 0px 0px 65px rgba(255, 255, 255, 0.25) inset;
-	}
-	25% {
-		opacity: 1;
-		transform: scale(0.9);
-		box-shadow: 0px 0px 0px 65px rgba(255, 255, 255, 0.25) inset,
-			0px 0px 0px 65px rgba(255, 255, 255, 0.25) inset;
-	}
-	43.75% {
-		transform: scale(1.15);
-		box-shadow: 0px 0px 0px 43.334px rgba(255, 255, 255, 0.25) inset,
-			0px 0px 0px 65px rgba(255, 255, 255, 0.25) inset;
-	}
-	62.5% {
-		transform: scale(1);
-		box-shadow: 0px 0px 0px 0px rgba(255, 255, 255, 0.25) inset,
-			0px 0px 0px 21.667px rgba(255, 255, 255, 0.25) inset;
-	}
-	81.25% {
-		box-shadow: 0px 0px 0px 0px rgba(255, 255, 255, 0.25) inset,
-			0px 0px 0px 0px rgba(255, 255, 255, 0.25) inset;
-	}
-	100% {
-		opacity: 1;
-		box-shadow: 0px 0px 0px 0px rgba(255, 255, 255, 0.25) inset,
-			0px 0px 0px 0px rgba(255, 255, 255, 0.25) inset;
-	}
+    0% {
+        opacity: 0;
+        transform: scale(0);
+        box-shadow: 0px 0px 0px 65px rgba(255, 255, 255, 0.25) inset,
+            0px 0px 0px 65px rgba(255, 255, 255, 0.25) inset;
+    }
+
+    25% {
+        opacity: 1;
+        transform: scale(0.9);
+        box-shadow: 0px 0px 0px 65px rgba(255, 255, 255, 0.25) inset,
+            0px 0px 0px 65px rgba(255, 255, 255, 0.25) inset;
+    }
+
+    43.75% {
+        transform: scale(1.15);
+        box-shadow: 0px 0px 0px 43.334px rgba(255, 255, 255, 0.25) inset,
+            0px 0px 0px 65px rgba(255, 255, 255, 0.25) inset;
+    }
+
+    62.5% {
+        transform: scale(1);
+        box-shadow: 0px 0px 0px 0px rgba(255, 255, 255, 0.25) inset,
+            0px 0px 0px 21.667px rgba(255, 255, 255, 0.25) inset;
+    }
+
+    81.25% {
+        box-shadow: 0px 0px 0px 0px rgba(255, 255, 255, 0.25) inset,
+            0px 0px 0px 0px rgba(255, 255, 255, 0.25) inset;
+    }
+
+    100% {
+        opacity: 1;
+        box-shadow: 0px 0px 0px 0px rgba(255, 255, 255, 0.25) inset,
+            0px 0px 0px 0px rgba(255, 255, 255, 0.25) inset;
+    }
 }
 
 @keyframes animateCheck {
-	from {
-		stroke-dashoffset: 80;
-	}
-	to {
-		stroke-dashoffset: 0;
-	}
+    from {
+        stroke-dashoffset: 80;
+    }
+
+    to {
+        stroke-dashoffset: 0;
+    }
 }
 
 @keyframes animateShadow {
-	0% {
-		opacity: 0;
-		width: 100%;
-		height: 15%;
-	}
-	25% {
-		opacity: 0.25;
-	}
-	43.75% {
-		width: 40%;
-		height: 7%;
-		opacity: 0.35;
-	}
-	100% {
-		width: 85%;
-		height: 15%;
-		opacity: 0.25;
-	}
+    0% {
+        opacity: 0;
+        width: 100%;
+        height: 15%;
+    }
+
+    25% {
+        opacity: 0.25;
+    }
+
+    43.75% {
+        width: 40%;
+        height: 7%;
+        opacity: 0.35;
+    }
+
+    100% {
+        width: 85%;
+        height: 15%;
+        opacity: 0.25;
+    }
 }
 
 @media screen and (max-width: 1279px) {
