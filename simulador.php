@@ -616,7 +616,7 @@ function simulador_send_form()
 
     // 7. Generar pagaré en PDF (base64)
     $pagare = generarPagarePDFBase64([
-        'valorMatricula' => '$' . $dataPlan['valorMatricula'],
+        'valorMatricula' => '$' . $dataPlan['matriculaNeta'],
         'valorMatriculaSTR' => $valorStr,
         'cuotaMensual' => '$' . $dataPlan['cuotaMensual'],
         'cuotaMensualSTR' => $cuotaStr,
