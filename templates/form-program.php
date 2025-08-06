@@ -1,23 +1,26 @@
 <?php
 
 $programs = [
-    "Administración financiera",
-    "Contaduría pública",
-    "Derecho",
-    "Comunicación y diseños ambientes digitales",
-    "Seguridad y salud en el trabajo",
-    "Sistemas de información",
-    "Mercadeo e innovación comercial",
-    "Tecnología seguridad digital",
-    "Licenciatura modelos educativos flexibles",
-    "Especialización finanzas y banca",
-    "Especialización en NIIF",
-    "Especialización gestión tributaria",
-    "Especialización derecho daños",
-    "Especialización contratación estatal",
-    "Especialización derecho informático",
-    "Especialización psicopedagogía",
-    "Especialización análisis de datos"
+    "ADMINISTRACIÓN FINANCIERA",
+    "CONTADURÍA PÚBLICA",
+    "COMUNICACIÓN Y DISEÑO AMBIENTES DIGITALES",
+    "DERECHO",
+    "SEGURIDAD Y SALUD EN EL TRABAJO",
+    "SISTEMAS DE INFORMACIÓN",
+    "MERCADEO E INNOVACIÓN COMERCIAL",
+    "TECNOLOGÍA SEGURIDAD DIGITAL",
+    "LICENCIATURA EDUCACIÓN FÍSICA",
+    "LICENCIATURA MODELOS EDUCATIVOS FLEXIBLES",
+    "EXPERIENCIA.CO LICENCIATURA EDUCACIÓN FÍSICA",
+    "EXPERIENCIA.CO LICENCIATURA MODELOS EDUCATIVOS FLEXIBLES",
+    "ESPECIALIZACIÓN FINANZAS Y BANCA",
+    "ESPECIALIZACIÓN EN NIIF",
+    "ESPECIALIZACIÓN GESTIÓN TRIBUTARIA",
+    "ESPECIALIZACIÓN DERECHO DAÑOS",
+    "ESPECIALIZACIÓN CONTRATACIÓN ESTATAL",
+    "ESPECIALIZACIÓN DERECHO INFORMÁTICO",
+    "ESPECIALIZACIÓN PSICOPEDAGOGÍA",
+    "ESPECIALIZACIÓN ANÁLISIS DE DATOS"
 ];
 
 $days = [

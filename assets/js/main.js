@@ -149,14 +149,6 @@ window.formDataState = {};
       if (!$('#celPhone').inputmask('isComplete')) isValid = false;
       $('#cellStudent').innertHTML = $('#celPhone').val();
 
-      // Si hay tipo de beca seleccionado, el archivo es requerido
-      const tieneBeca = $('#typeOfScholarship').is(':checked');
-      const archivoBeca = $('#proofOfScholarship')[0]?.files.length || 0;
-
-      if (tieneBeca && archivoBeca === 0) {
-        isValid = false;
-      }
-
       $('#next-student').prop('disabled', !isValid)
       $('#send').prop('disabled', !isValid);
     }
@@ -234,10 +226,10 @@ window.formDataState = {};
           const discountReplace = mapData[0][13].replace(/[ ,$]/g, "");
           valueProgramDiscount = parseFloat(discountReplace) || 0;
         } else {
-          if (date <= new Date(dateDiscountOne)) {
+          if (date <= parseDateDMY(dateDiscountOne)) {
             const discountReplace = mapData[0][8].replace(/[ ,$]/g, "");
             valueProgramDiscount = parseFloat(discountReplace) || 0;
-          } else if (date > new Date(dateDiscountOne) && date <= new Date(dateDiscountTwo)) {
+          } else if (date > parseDateDMY(dateDiscountOne) && date <= parseDateDMY(dateDiscountTwo)) {
             const discountReplace = mapData[0][11].replace(/[ ,$]/g, "");
             valueProgramDiscount = parseFloat(discountReplace) || 0;
           } else {
@@ -262,7 +254,8 @@ window.formDataState = {};
         percentage,
         (parseFloat(interestrate) || 0) / 100,
         parseInt(term),
-        formatDateToYMD(date)
+        formatDateToYMD(date),
+        program
       );
 
       const $tbody = $('#table-plan');
@@ -553,14 +546,37 @@ window.formDataState = {};
   // validación de campo plazo
   function populateTermOptions() {
     const today = new Date();
-    const limitDate = new Date(2025, 6, 24); // 24 de julio (mes 6 = julio)
+    const day = today.getDate();
+    const month = today.getMonth(); // 0 = enero
+    const year = today.getFullYear();
 
     const $termSelect = $('#term');
     $termSelect.empty().append(`<option value="">Selecciona una opción</option>`);
 
-    const maxTerm = today >= limitDate ? 5 : 12; // después de 24/07/2025 sólo 5 meses
+    // Determinar si estamos en el primer o segundo semestre
+    const isFirstSemester = month <= 5; // enero (0) a junio (5)
 
-    for (let i = 1; i <= maxTerm; i++) {
+    // Fecha de la primera cuota:
+    const firstInstallmentDate = new Date(year, month, 30);
+    if (day > 10) {
+      // Si se tramita después del día 10, primera cuota es el 30 del siguiente mes
+      firstInstallmentDate.setMonth(firstInstallmentDate.getMonth() + 1);
+    }
+
+    // Fecha límite de pagos: 30 de junio o 30 de diciembre
+    const lastInstallmentDate = isFirstSemester
+      ? new Date(year, 5, 30) // junio
+      : new Date(year, 11, 30); // diciembre
+
+    // Calcular el número de meses completos disponibles
+    let monthsAvailable =
+      (lastInstallmentDate.getFullYear() - firstInstallmentDate.getFullYear()) * 12 +
+      (lastInstallmentDate.getMonth() - firstInstallmentDate.getMonth()) + 1;
+
+    // Limitar a mínimo 1 y máximo 12 cuotas posibles
+    monthsAvailable = Math.max(0, Math.min(monthsAvailable, 12));
+    
+    for (let i = 1; i <= monthsAvailable; i++) {
       $termSelect.append(`<option value="${i}">${i} mes${i > 1 ? 'es' : ''}</option>`);
     }
   }
@@ -577,7 +593,6 @@ window.formDataState = {};
       $('#percentage').val(''); // Limpiar el campo al ocultarlo
       $percentageSelect.empty().append('<option value="">Selecciona una opción</option>'); // Limpiar opciones
       $percentageSelect.attr('required', false); // Hacerlo no requerido
-      $('#proofOfScholarship').removeAttr('required'); // Quitar requerido del archivo de prueba de beca
       $('#scholarshipOrigin').removeAttr('required');
       $originField.hide().find('input').val('').removeAttr('required');
       return;
@@ -587,25 +602,13 @@ window.formDataState = {};
     $('#percentage-scholarship').show();
     $('#percentage').val(''); // Limpiar el campo al mostrarlo
     $percentageSelect.attr('required', true); // Hacerlo requerido
-    $('#proofOfScholarship').attr('required', true); // Requerir archivo de prueba de beca
     $('#scholarshipOrigin').attr('required', true);
     $originField.show().find('input').attr('required', true);
     // llenar el select de porcentaje de beca de 30% a 80% en incrementos de 5% 
     for (let i = 35; i <= 80; i += 5) {
       $('#percentage').append(`<option value="${i}">${i}%</option>`);
     }
-  }
-
-  // validación del campo jornada
-  function syncModalityWithJornada() {
-    const jornada = $('#days').val();
-    const isDistance = jornada === 'Distancia'; // Distancia = Jornada 'Distancia'
-
-    if (isDistance) {
-      $('#mode').val('Distancia').prop('disabled', true); // Distancia = Modalidad 'Distancia'
-    } else {
-      $('#mode').prop('disabled', false);
-    }
+    $('#percentage').append(`<option value="Financiación 100%</option>`)
   }
 
   function syncJornadaWithModality() {
@@ -649,8 +652,10 @@ window.formDataState = {};
     if (!excelData || !Array.isArray(excelData)) return [];
     const data = excelData.slice(3); // Ignorar la primera fila si es encabezado
 
+    const programReplace = limpiarNombre(program);
+
     return data.filter(d => {
-      return d[1] === program.toUpperCase() && d[2] === day && d[3] === modality && d[4] === student;
+      return d[1] === programReplace.toUpperCase() && d[2] === day && d[3] === modality && d[4] === student;
     });
   }
 
@@ -702,6 +707,24 @@ window.formDataState = {};
         console.error('Error al eliminar archivos temporales.', err);
       }
     });
+  }
+
+  function parseDateDMY(dateStr) {
+    const [month, day, year] = dateStr.split('/');
+    return new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+  }
+
+  function limpiarNombre(nombre) {
+    const casos = [
+      "EXPERIENCIA.CO LICENCIATURA EDUCACIÓN FÍSICA",
+      "EXPERIENCIA.CO LICENCIATURA MODELOS EDUCATIVOS FLEXIBLES"
+    ];
+
+    if (casos.includes(nombre)) {
+      return nombre.replace("EXPERIENCIA.CO ", "");
+    }
+
+    return nombre; // Si no coincide, lo deja igual
   }
 
 })(jQuery);

@@ -24,7 +24,7 @@
         <div>
           <p>Plazo del crédito</p>
           <h5>
-            El tiempo y número de cuotas disponibles dependerán de la fecha de la solicitud y el monto solicitado.
+            El tiempo y número de cuotas disponibles dependerán de la fecha de la solicitud.
           </h5>
         </div>
       </div>

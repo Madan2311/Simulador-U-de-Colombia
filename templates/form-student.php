@@ -1,6 +1,6 @@
 <?php
 
-    $programs = [
+$programs = [
     1 => "Administración financiera",
     2 => "Contaduría pública",
     3 => "Derecho",
@@ -18,40 +18,40 @@
     15 => "Especialización derecho informático",
     16 => "Especialización psicopedagogía",
     17 => "Especialización análisis de datos"
-    ];
+];
 
-    $days = [
-        1 => "Sabatina",
-        2 => "Diurna",
-        3 => "Nocturna",
-        4 => "Distancia",
-    ];
+$days = [
+    1 => "Sabatina",
+    2 => "Diurna",
+    3 => "Nocturna",
+    4 => "Distancia",
+];
 
-    $mode = [
-        1 => "Presencial",
-        2 => "Distancia",
-    ];
+$mode = [
+    1 => "Presencial",
+    2 => "Distancia",
+];
 
-    $typeOfStudent = [
-        1 => "Antiguo",
-        2 => "Nuevo",
-    ];
+$typeOfStudent = [
+    1 => "Antiguo",
+    2 => "Nuevo",
+];
 
-    $typeOfScholarship = [
+$typeOfScholarship = [
 
-    ];
+];
 
-    $term = [
+$term = [
 
-    ];
+];
 
-    //ordenar array
-    asort($programs);
-    asort($days);
-    asort($mode);
-    asort($typeOfStudent);
-    asort($typeOfScholarship);
-    asort($term);
+//ordenar array
+asort($programs);
+asort($days);
+asort($mode);
+asort($typeOfStudent);
+asort($typeOfScholarship);
+asort($term);
 
 ?>
 
@@ -69,7 +69,7 @@
                     <label for="name">Primer nombre</label>
                     <input type="text" id="name" required autocomplete="off" />
                 </div>
-                
+
                 <div>
                     <label for="secondName">Segundo nombre</label>
                     <input type="text" id="secondName" autocomplete="off" />
@@ -81,7 +81,7 @@
                     <label for="lastName">Primer apellido</label>
                     <input type="text" id="lastName" required autocomplete="off" />
                 </div>
-                
+
                 <div>
                     <label for="secondLastName">Segundo apellido</label>
                     <input type="text" id="secondLastName" autocomplete="off" />
@@ -99,39 +99,34 @@
                     <input type="text" id="celPhone" required autocomplete="off" />
                 </div>
             </div>
-            
+
             <div style="margin: 0 5px;">
                 <label for="email">Correo</label>
                 <input type="email" id="email" required autocomplete="off" />
             </div>
-            
+
             <h4>Carga de documentos</h4>
             <div class="content-inputs">
                 <div class="file-component">
                     <input type="file" id="employmentLetter" name="employmentLetter" accept=".pdf" required />
-                    <label for="employmentLetter"><span class="material-symbols-outlined">upload</span><span class="text">Carta laboral</span></label>
+                    <label for="employmentLetter"><span class="material-symbols-outlined">upload</span><span
+                            class="text">Carta laboral</span></label>
                     <span class="material-symbols-outlined close">close</span>
                 </div>
 
                 <div class="file-component">
                     <input type="file" id="paymentStubs" name="paymentStubs" accept=".pdf" required />
-                    <label for="paymentStubs"><span class="material-symbols-outlined">upload</span><span class="text">Colillas de pago</span></label>
+                    <label for="paymentStubs"><span class="material-symbols-outlined">upload</span><span
+                            class="text">Colilla de pago</span></label>
                     <span class="material-symbols-outlined close">close</span>
                 </div>
             </div>
-            
-            <div class="content-inputs">
-                <div class="file-component">
-                    <input type="file" id="proofOfScholarship" name="proofOfScholarship" accept=".pdf" />
-                    <label for="proofOfScholarship"><span class="material-symbols-outlined">upload</span><span class="text">Liquidación de matrícula Q10</span></label>
-                    <span class="material-symbols-outlined close">close</span>
-                </div>
 
-                <div class="file-component">
-                    <input type="file" id="document" name="document" accept=".pdf" required />
-                    <label for="document"><span class="material-symbols-outlined">upload</span><span class="text">Cédula de ciudadania</span></label>
-                    <span class="material-symbols-outlined close">close</span>
-                </div>
+            <div class="file-component" style="margin: 0 5px;">
+                <input type="file" id="document" name="document" accept=".pdf" required />
+                <label for="document"><span class="material-symbols-outlined">upload</span><span class="text">Cédula de
+                        ciudadanía</span></label>
+                <span class="material-symbols-outlined close">close</span>
             </div>
 
         </div>
@@ -139,6 +134,6 @@
 
     <div class="content-btns">
         <button class="continue" id="previous-student">Anterior</button>
-        <button class="continue" id="next-student" disabled >Continuar</button>
+        <button class="continue" id="next-student" disabled>Continuar</button>
     </div>
 </div>

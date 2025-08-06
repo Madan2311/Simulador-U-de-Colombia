@@ -665,8 +665,7 @@ function simulador_send_form()
     $archivos_temp = [
         'employmentLetter_temp',
         'paymentStubs_temp',
-        'document_temp',
-        'proofOfScholarship_temp'
+        'document_temp'
     ];
 
     foreach ($archivos_temp as $campo) {

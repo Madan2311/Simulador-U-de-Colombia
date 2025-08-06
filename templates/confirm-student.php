@@ -6,8 +6,9 @@
 
     <div class="requirements">
         <h3>Se requiere verificación</h3>
-        <p>Ingresa el Código que enviamos al correo electrónico <b id="emailStudent"></b> o al celular <b id="cellStudent"></b></p>
-        
+        <p>¡Ya casi terminas! Solo ingresa el código que enviamos a tu correo electrónico o celular. Recuerda que vence
+            en 5 minutos.</p>
+
         <div class="form formValidateCode">
             <div class="content-inputs">
                 <div>
