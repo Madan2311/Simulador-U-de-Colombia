@@ -605,7 +605,7 @@ function simulador_send_form()
     $cuotaStr = strtoupper(numero_a_letras($cuota)) . " PESOS";
 
     // 4. Obtener valor matrícula desde tabla HTML
-    $valor = floatval(str_replace('.', '', $dataPlan['valorMatricula']));
+    $valor = floatval(str_replace('.', '', $dataPlan['montoCredito']));
     $valorStr = strtoupper(numero_a_letras($valor)) . " PESOS";
 
     // 6. Día, mes, año actual
