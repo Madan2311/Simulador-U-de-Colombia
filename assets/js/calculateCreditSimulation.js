@@ -1,4 +1,4 @@
-function calculateCreditSimulation(valorMatricula, descuentoBeca, tasaInteres, plazoMeses, fechaInicioStr, program) {
+function calculateCreditSimulation(valorMatricula, descuentoBeca, tasaInteres, plazoMeses, fechaInicioStr, program, financingChecked) {
 
   function formatearFechaLocal(fecha) {
     const year = fecha.getFullYear();
@@ -19,6 +19,8 @@ function calculateCreditSimulation(valorMatricula, descuentoBeca, tasaInteres, p
 
   if (program === "EXPERIENCIA.CO LICENCIATURA EDUCACIÓN FÍSICA" || program === "EXPERIENCIA.CO LICENCIATURA MODELOS EDUCATIVOS FLEXIBLES") {
     porcentajeCuotaInicial = 0.15; // 15% para estos programas
+  } else if(financingChecked) {
+    porcentajeCuotaInicial = 0 ; // 0% si se selecciona la opción de financiación
   } else {
     porcentajeCuotaInicial = 0.3; // 30% para otros programas
   }

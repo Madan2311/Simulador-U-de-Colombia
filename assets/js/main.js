@@ -15,7 +15,8 @@ window.formDataState = {};
       '#term',
       '#typeOfScholarship',
       '#percentage',
-      '#scholarshipOrigin'
+      '#scholarshipOrigin',
+      "#financing"
     ];
 
     // Llamar el login al cargar el simulador
@@ -210,6 +211,7 @@ window.formDataState = {};
       const term = $('#term').val();
       const percentage = (parseInt($('#percentage').val()) || 0) / 100;
       const checked = $('#typeOfScholarship').is(':checked');
+      const financingChecked = $('#financing').is(':checked');
 
       const date = new Date();
       const mapData = mapExcelData(simulador_ajax.excelData, program, day, modality, typeOfStudent);
@@ -255,7 +257,8 @@ window.formDataState = {};
         (parseFloat(interestrate) || 0) / 100,
         parseInt(term),
         formatDateToYMD(date),
-        program
+        program,
+        financingChecked
       );
 
       const $tbody = $('#table-plan');

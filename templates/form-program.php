@@ -109,6 +109,15 @@ asort($typeOfStudent);
 
             <div class="content-inputs typeOfScholarship">
                 <div class="custom-checkbox">
+                    <label style="margin:0;" for="financing">
+                        <input type="checkbox" id="financing" name="financing">
+                        <div class="dot-box">
+                            <div class="dot"></div>
+                        </div>
+                        Financiación 100%
+                    </label>
+                </div>
+                <div class="custom-checkbox">
                     <label style="margin:0;" for="typeOfScholarship">
                         <input type="checkbox" id="typeOfScholarship" name="typeOfScholarship">
                         <div class="dot-box">
