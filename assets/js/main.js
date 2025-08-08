@@ -213,7 +213,7 @@ window.formDataState = {};
       const checked = $('#typeOfScholarship').is(':checked');
       const financingChecked = $('#financing').is(':checked');
 
-      const date = new Date();
+      const date = stripTime(new Date());
       const mapData = mapExcelData(simulador_ajax.excelData, program, day, modality, typeOfStudent);
       let valueProgramDiscount = 0;
 
@@ -578,7 +578,7 @@ window.formDataState = {};
 
     // Limitar a mínimo 1 y máximo 12 cuotas posibles
     monthsAvailable = Math.max(0, Math.min(monthsAvailable, 12));
-    
+
     for (let i = 1; i <= monthsAvailable; i++) {
       $termSelect.append(`<option value="${i}">${i} mes${i > 1 ? 'es' : ''}</option>`);
     }
@@ -715,6 +715,10 @@ window.formDataState = {};
   function parseDateDMY(dateStr) {
     const [month, day, year] = dateStr.split('/');
     return new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+  }
+
+  function stripTime(date) {
+    return new Date(date.getFullYear(), date.getMonth(), date.getDate());
   }
 
   function limpiarNombre(nombre) {
