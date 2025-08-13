@@ -585,8 +585,8 @@ function simulador_send_form()
     $message .= $styledProgramDetail;
     $message .= $styledPaymentPlan;
 
-    #$to = 'analistacontable@udecolombia.edu.co'; // Correo del administrador
-    $to = 'henao-042001@hotmail.com'; // Correo del administrador
+    $to = 'analistacontable@udecolombia.edu.co'; // Correo del administrador
+    #$to = 'henao-042001@hotmail.com'; // Correo del administrador
     $subject = '💰 Simulación de Crédito';
     $headers = [
         'Content-Type: text/html; charset=UTF-8',
