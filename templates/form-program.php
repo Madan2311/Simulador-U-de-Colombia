@@ -116,6 +116,7 @@ asort($typeOfStudent);
                         </div>
                         Financiación 100%
                     </label>
+                    <span>La financiación 100% es sólo para estudiantes autorizados</span>
                 </div>
                 <div class="custom-checkbox">
                     <label style="margin:0;" for="typeOfScholarship">
@@ -126,18 +127,19 @@ asort($typeOfStudent);
                         ¿Tiene beca o descuento especial?
                     </label>
                 </div>
-                <div class="percentage" id="percentage-scholarship" style="display: none;">
-                    <div>
-                        <label for="percentage">Porcentaje</label>
-                        <select name="select" id="percentage">
-                            <option value="">Selecciona una opción</option>
-                        </select>
-                    </div>
+            </div>
 
-                    <div>
-                        <label for="scholarshipOrigin">Origen de beca o descuento especial</label>
-                        <input type="text" id="scholarshipOrigin" name="scholarshipOrigin" autocomplete="off" />
-                    </div>
+            <div class="content-inputs" id="percentage-scholarship" style="display: none;">
+                <div>
+                    <label for="percentage">Porcentaje</label>
+                    <select name="select" id="percentage">
+                        <option value="">Selecciona una opción</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="scholarshipOrigin">Origen de beca o descuento especial</label>
+                    <input type="text" id="scholarshipOrigin" name="scholarshipOrigin" autocomplete="off" />
                 </div>
             </div>
 

@@ -271,6 +271,14 @@
 
 .simulador-plugin .typeOfScholarship>div {
     width: 50%;
+    flex-wrap: wrap;
+    align-items: flex-start;
+}
+
+.simulador-plugin .typeOfScholarship span {
+    width: 100%;
+    color: var(--highlighter);
+    font-size: 0.8em;
 }
 
 .simulador-plugin .custom-checkbox {
