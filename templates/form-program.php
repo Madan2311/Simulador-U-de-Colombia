@@ -116,7 +116,7 @@ asort($typeOfStudent);
                         </div>
                         Financiación 100%
                     </label>
-                    <span>La financiación 100% es sólo para estudiantes autorizados</span>
+                    <span>*ADVERTENCIA: La financiación 100% es sólo para estudiantes autorizados</span>
                 </div>
                 <div class="custom-checkbox">
                     <label style="margin:0;" for="typeOfScholarship">
