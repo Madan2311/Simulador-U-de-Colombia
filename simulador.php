@@ -76,13 +76,13 @@ add_action('wp_ajax_nopriv_simulador_login_firma', 'simulador_login_firma');
 
 function simulador_login_firma()
 {
-    $wsdl = 'https://test-circuitodefirmado.andesscd.com.co/WS/FE/wsdl.php?wsdl';
+    $wsdl = 'https://circuitodefirmado.andesscd.com.co/WS/FE/wsdl.php?wsdl';
 
     try {
 
         // Credenciales WS-Security (debes poner las reales si cambian dinámicamente)
-        $username = "ximena.garcía";
-        $password = "SXdPaUEzRzhqR2pDcGtTZ0J3ZXllR21vcDFpUkxsWmxobHR1Vlo5NXpHaFNISlNOVks1eVdwYkJBd2Z4NmNDTEQ5RU9oWE8vMU1aU0pKQ3ZUUzVCdUkza2VCUT0=";
+        $username = "ximena.garcia";
+        $password = "eVFEMWRzbWhuR2dNNVl1dDNGVE1NWnhJWU44NUFBMEpCbmhzZ1RPc3F5L1FwUkJ3NndyYjlsTXhQTUpmNldiSDdKZ2VSNlEvUnVJWFlCajZ5TVdvUm1WMk5wQT0=";
 
         // --- Generar dinámicamente el Created y el Nonce ---
         $created = gmdate('Y-m-d\TH:i:s.\0\0\0\Z'); // ISO8601 en UTC
@@ -177,9 +177,9 @@ function solicitud_certificado_handler()
 
 function simulador_certificado($data)
 {
-    $wsdl = "https://test-circuitodefirmado.andesscd.com.co/WS/FE/wsdl.php?wsdl";
-    $username = 'ximena.garcía';
-    $password = 'SXdPaUEzRzhqR2pDcGtTZ0J3ZXllR21vcDFpUkxsWmxobHR1Vlo5NXpHaFNISlNOVks1eVdwYkJBd2Z4NmNDTEQ5RU9oWE8vMU1aU0pKQ3ZUUzVCdUkza2VCUT0=';
+    $wsdl = "https://circuitodefirmado.andesscd.com.co/WS/FE/wsdl.php?wsdl";
+    $username = 'ximena.garcia';
+    $password = 'eVFEMWRzbWhuR2dNNVl1dDNGVE1NWnhJWU44NUFBMEpCbmhzZ1RPc3F5L1FwUkJ3NndyYjlsTXhQTUpmNldiSDdKZ2VSNlEvUnVJWFlCajZ5TVdvUm1WMk5wQT0=';
 
     // Timestamp y Nonce
     $created = gmdate('Y-m-d\TH:i:s\Z');
@@ -431,9 +431,9 @@ function fecha_mes_en_letras($mesNumero)
 
 function firma_documento_ws($data)
 {
-    $wsdl = 'https://test-circuitodefirmado.andesscd.com.co/WS/FE/wsdl.php?wsdl';
-    $username = 'ximena.garcía';
-    $password = 'SXdPaUEzRzhqR2pDcGtTZ0J3ZXllR21vcDFpUkxsWmxobHR1Vlo5NXpHaFNISlNOVks1eVdwYkJBd2Z4NmNDTEQ5RU9oWE8vMU1aU0pKQ3ZUUzVCdUkza2VCUT0=';
+    $wsdl = 'https://circuitodefirmado.andesscd.com.co/WS/FE/wsdl.php?wsdl';
+    $username = 'ximena.garcia';
+    $password = 'eVFEMWRzbWhuR2dNNVl1dDNGVE1NWnhJWU44NUFBMEpCbmhzZ1RPc3F5L1FwUkJ3NndyYjlsTXhQTUpmNldiSDdKZ2VSNlEvUnVJWFlCajZ5TVdvUm1WMk5wQT0=';
 
     // WS-Security dinámico
     $nonce = base64_encode(random_bytes(16));
@@ -585,7 +585,8 @@ function simulador_send_form()
     $message .= $styledProgramDetail;
     $message .= $styledPaymentPlan;
 
-    $to = 'analistacontable@udecolombia.edu.co'; // Correo del administrador
+    #$to = 'analistacontable@udecolombia.edu.co'; // Correo del administrador
+    $to = 'henao-042001@hotmail.com'; // Correo del administrador
     $subject = '💰 Simulación de Crédito';
     $headers = [
         'Content-Type: text/html; charset=UTF-8',
@@ -644,7 +645,7 @@ function simulador_send_form()
         'Coordenadas' => '200,60,200,60'
     ];
     $response_firma = firma_documento_ws($data);
-
+    error_log('response_firma: ' . print_r($response_firma, true)); 
     $upload_dir = wp_upload_dir();
     $temp_dir = plugin_dir_path(__FILE__) . 'pdFiles/temp/';
     $pdf_path = $temp_dir . 'pagare' . $pagare['consecutivo'] . '.pdf';
