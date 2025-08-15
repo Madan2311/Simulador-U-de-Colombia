@@ -608,10 +608,10 @@ window.formDataState = {};
     $('#scholarshipOrigin').attr('required', true);
     $originField.show().find('input').attr('required', true);
     // llenar el select de porcentaje de beca de 30% a 80% en incrementos de 5% 
-    for (let i = 35; i <= 80; i += 5) {
+    for (let i = 30; i <= 80; i += 5) {
       $('#percentage').append(`<option value="${i}">${i}%</option>`);
     }
-    $('#percentage').append(`<option value="Financiación 100%</option>`)
+    //$('#percentage').append(`<option value="Financiación 100%</option>`)
   }
 
   function syncJornadaWithModality() {
