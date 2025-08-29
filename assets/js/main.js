@@ -579,7 +579,10 @@ window.formDataState = {};
     // Limitar a mínimo 1 y máximo 12 cuotas posibles
     monthsAvailable = Math.max(0, Math.min(monthsAvailable, 12));
 
-    for (let i = 1; i <= monthsAvailable; i++) {
+    //for (let i = 1; i <= monthsAvailable; i++) {
+    //  $termSelect.append(`<option value="${i}">${i} mes${i > 1 ? 'es' : ''}</option>`);
+    //}
+    for (let i = 1; i <= 5; i++) {
       $termSelect.append(`<option value="${i}">${i} mes${i > 1 ? 'es' : ''}</option>`);
     }
   }
