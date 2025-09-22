@@ -582,7 +582,7 @@ window.formDataState = {};
     //for (let i = 1; i <= monthsAvailable; i++) {
     //  $termSelect.append(`<option value="${i}">${i} mes${i > 1 ? 'es' : ''}</option>`);
     //}
-    for (let i = 1; i <= 5; i++) {
+    for (let i = 1; i <= 4; i++) {
       $termSelect.append(`<option value="${i}">${i} mes${i > 1 ? 'es' : ''}</option>`);
     }
   }
