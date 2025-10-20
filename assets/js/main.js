@@ -561,7 +561,7 @@ window.formDataState = {};
 
     // Fecha de la primera cuota:
     const firstInstallmentDate = new Date(year, month, 30);
-    if (day > 29) {
+    if (day > 22) {
       // Si se tramita después del día 10, primera cuota es el 30 del siguiente mes
       firstInstallmentDate.setMonth(firstInstallmentDate.getMonth() + 1);
     }
@@ -582,7 +582,7 @@ window.formDataState = {};
     //for (let i = 1; i <= monthsAvailable; i++) {
     //  $termSelect.append(`<option value="${i}">${i} mes${i > 1 ? 'es' : ''}</option>`);
     //}
-    for (let i = 1; i <= 3; i++) {
+    for (let i = 1; i <= 4; i++) {
       $termSelect.append(`<option value="${i}">${i} mes${i > 1 ? 'es' : ''}</option>`);
     }
   }
