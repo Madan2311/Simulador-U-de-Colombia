@@ -64,7 +64,7 @@ function calculateCreditSimulation(valorMatricula, descuentoBeca, tasaInteres, p
   const fechaInicio = new Date(anioInicio, mesInicio - 1, diaInicio);
 
   // Calcular fecha de la primera cuota mensual
-  const mesPrimeraCuota = fechaInicio.getDate() <= 22 ? fechaInicio.getMonth() : fechaInicio.getMonth() + 1;
+  const mesPrimeraCuota = fechaInicio.getDate() <= 10 ? fechaInicio.getMonth() : fechaInicio.getMonth() + 1;
   const anioPrimeraCuota = fechaInicio.getFullYear() + (mesPrimeraCuota > 11 ? 1 : 0);
   const mesAjustado = mesPrimeraCuota % 12;
 
